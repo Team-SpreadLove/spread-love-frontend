@@ -1,6 +1,6 @@
 import Header from "./components/Header";
 import LoadingSpinner from "./components/LoadingSpinner";
-import Button from "./components/Button";
+import Footer from "./components/Footer";
 
 const App = () => {
   return (
@@ -21,17 +21,7 @@ const App = () => {
           </p>
         </div>
       </main>
-      <footer className="flex justify-end gap-x-2">
-        <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
-          저장
-        </Button>
-        <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
-          삭제
-        </Button>
-        <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
-          닫기
-        </Button>
-      </footer>
+      <Footer />
     </div>
   );
 };
