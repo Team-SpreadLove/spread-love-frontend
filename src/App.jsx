@@ -1,3 +1,4 @@
+import Button from "./components/Button";
 import Logo from "./components/Logo";
 
 const App = () => {
@@ -7,15 +8,15 @@ const App = () => {
         <div className="flex justify-between">
           <Logo iconSize={32} textSize="16px" spacing="mt-0.5 ml-1" />
           <div className="flex gap-x-2">
-            <button className="bg-sl-white border border-sl-blue w-[65px] h-[30px] rounded-2xl font-medium">
+            <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
               기록
-            </button>
-            <button className="bg-sl-white border border-sl-blue w-[65px] h-[30px] rounded-2xl font-medium">
+            </Button>
+            <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
               로그인
-            </button>
-            <button className="bg-sl-white border border-sl-blue w-[65px] h-[30px] rounded-2xl font-medium">
+            </Button>
+            <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
               설정
-            </button>
+            </Button>
           </div>
         </div>
       </header>
