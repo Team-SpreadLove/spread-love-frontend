@@ -1,4 +1,5 @@
 import Header from "./components/Header";
+import LoadingSpinner from "./components/LoadingSpinner";
 import Button from "./components/Button";
 
 const App = () => {
@@ -10,10 +11,7 @@ const App = () => {
           <img src="/images/icons/spreadlove-summary-16.svg" alt="이 페이지 요약하기" />
           <span>이 페이지 요약하기</span>
         </button>
-        <div className="flex flex-col items-center gap-4">
-          <img src="/images/icons/spreadlove-loading-48.svg" alt="페이지를 요약중입니다" />
-          <p className="text-[16px]">페이지를 요약중입니다...</p>
-        </div>
+        <LoadingSpinner message={"페이지를 요약중입니다..."} />
         <div className="flex flex-col gap-4">
           <h1 className="text-[32px]">네이버</h1>
           <p className="text-[24px]">
