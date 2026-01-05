@@ -20,7 +20,12 @@ const App = () => {
           </div>
         </div>
       </header>
-      <main className="flex items-center justify-center w-full h-full border border-sl-blue rounded-xl"></main>
+      <main className="flex items-center justify-center w-full h-full border border-sl-blue rounded-xl">
+        <button className="flex items-center justify-center gap-2 w-full h-[30px] m-3 bg-sl-blue border rounded-2xl font-medium text-white">
+          <img src="/images/icons/spreadlove-summary-16.svg" alt="이 페이지 요약하기" />
+          <span>이 페이지 요약하기</span>
+        </button>
+      </main>
     </div>
   );
 };
