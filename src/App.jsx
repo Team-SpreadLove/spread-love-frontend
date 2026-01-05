@@ -26,6 +26,17 @@ const App = () => {
           <span>이 페이지 요약하기</span>
         </button>
       </main>
+      <footer className="flex justify-end gap-x-2">
+        <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
+          저장
+        </Button>
+        <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
+          삭제
+        </Button>
+        <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
+          닫기
+        </Button>
+      </footer>
     </div>
   );
 };
