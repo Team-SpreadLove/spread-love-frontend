@@ -1,4 +1,5 @@
 import SidebarButton from "../components/SidebarButton.jsx";
+import GeneralPage from "../pages/GeneralPage.jsx";
 
 const Settings = () => {
   return (
@@ -19,7 +20,7 @@ const Settings = () => {
         </nav>
       </aside>
       <main className="flex-1 p-8">
-        <p>콘텐츠 영역</p>
+        <GeneralPage />
       </main>
     </div>
   );
