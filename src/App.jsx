@@ -3,7 +3,7 @@ import Logo from "./components/Logo";
 
 const App = () => {
   return (
-    <div className="h-screen p-5 flex flex-col gap-5">
+    <div className="flex flex-col h-screen gap-5 p-5">
       <header>
         <div className="flex justify-between">
           <Logo iconSize={32} textSize="16px" spacing="mt-0.5 ml-1" />
@@ -20,7 +20,7 @@ const App = () => {
           </div>
         </div>
       </header>
-      <main className="flex items-center justify-center w-full h-full border rounded-xl border-sl-blue"></main>
+      <main className="flex items-center justify-center w-full h-full border border-sl-blue rounded-xl"></main>
     </div>
   );
 };

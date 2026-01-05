@@ -7,8 +7,8 @@ const Logo = ({ iconSize, textSize, spacing }) => {
         width={iconSize}
         height={iconSize}
       />
-      <span className={`${spacing} text-[${textSize}] font-semibold`}>Spread</span>
-      <span className={`mt-0.5 text-[${textSize}] font-semibold text-sl-red`}>Love</span>
+      <span className={`${spacing} font-semibold text-[${textSize}]`}>Spread</span>
+      <span className={`mt-0.5 font-semibold text-[${textSize}] text-sl-red`}>Love</span>
     </a>
   );
 };
