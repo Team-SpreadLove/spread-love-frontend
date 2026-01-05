@@ -21,10 +21,14 @@ const App = () => {
         </div>
       </header>
       <main className="flex items-center justify-center w-full h-full border border-sl-blue rounded-xl">
-        <button className="flex items-center justify-center gap-2 w-full h-[30px] m-3 bg-sl-blue border rounded-2xl font-medium text-white">
+        <button className="flex items-center justify-center gap-2 w-full m-3 h-[30px] bg-sl-blue border rounded-2xl font-medium text-white">
           <img src="/images/icons/spreadlove-summary-16.svg" alt="이 페이지 요약하기" />
           <span>이 페이지 요약하기</span>
         </button>
+        <div className="flex flex-col items-center gap-4">
+          <img src="/images/icons/spreadlove-loading-48.svg" alt="페이지를 요약중입니다" />
+          <p className="text-[16px]">페이지를 요약중입니다...</p>
+        </div>
       </main>
       <footer className="flex justify-end gap-x-2">
         <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
