@@ -22,5 +22,6 @@
     "service_worker": "src/background/background.js",
     "type": "module"
   },
-  "permissions": ["sidePanel"]
+  "permissions": ["sidePanel"],
+  "options_page": "src/tabs/settings.html"
 }
