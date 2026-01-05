@@ -14,7 +14,7 @@ const Settings = () => {
           <span className="text-2xl font-bold">SpreadLove</span>
         </div>
         <nav>
-          <SidebarButton label="일반" className="text-gray-600" />
+          <SidebarButton label="일반" className="text-sl-blue bg-blue-50" />
           <SidebarButton label="저시력자 모드" className="text-gray-600" />
           <SidebarButton label="정보" className="text-gray-600" />
         </nav>
