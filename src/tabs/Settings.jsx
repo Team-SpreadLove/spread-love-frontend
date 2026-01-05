@@ -1,3 +1,5 @@
+import SidebarButton from "../components/SidebarButton.jsx";
+
 const Settings = () => {
   return (
     <div className="flex min-h-screen bg-sl-white text-sl-black">
@@ -10,6 +12,11 @@ const Settings = () => {
           />
           <span className="text-2xl font-bold">SpreadLove</span>
         </div>
+        <nav>
+          <SidebarButton label="일반" className="text-gray-600" />
+          <SidebarButton label="저시력자 모드" className="text-gray-600" />
+          <SidebarButton label="정보" className="text-gray-600" />
+        </nav>
       </aside>
       <main className="flex-1 p-8">
         <p>콘텐츠 영역</p>
