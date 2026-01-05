@@ -1,5 +1,6 @@
 import SidebarButton from "../components/SidebarButton.jsx";
 import GeneralPage from "../pages/GeneralPage.jsx";
+import AccessibilityPage from "../pages/AccessibilityPage.jsx";
 
 const Settings = () => {
   return (
