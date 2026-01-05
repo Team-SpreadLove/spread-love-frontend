@@ -1,7 +1,9 @@
+import Logo from "./components/Logo";
+
 const App = () => {
   return (
-    <div className="bg-blue-500">
-      <h1 className="text-2xl">Hello Spread Love </h1>
+    <div className="p-5">
+      <Logo iconSize={32} textSize="16px" spacing="mt-0.5 ml-1" />
     </div>
   );
 };
