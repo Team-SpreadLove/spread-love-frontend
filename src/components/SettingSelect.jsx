@@ -1,12 +1,12 @@
 const SettingSelect = ({ label, value }) => {
   return (
     <div className="mb-8">
-      <label className="block text-gray-600 text-lg mb-2">{label}</label>
+      <label className="block mb-2 text-lg text-sl-gray-dark">{label}</label>
       <div className="relative">
-        <select className="w-full p-3 border border-gray-300 rounded-lg bg-white text-lg">
+        <select className="w-full p-3 bg-sl-white border border-sl-gray-light rounded-lg text-lg">
           <option>{value}</option>
         </select>
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></span>
+        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sl-gray-light pointer-events-none"></span>
       </div>
     </div>
   );

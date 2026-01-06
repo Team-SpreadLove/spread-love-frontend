@@ -1,6 +1,6 @@
 const SettingLink = ({ label }) => {
   return (
-    <a href="#" className="block text-sl-blue text-lg mb-8 hover:underline">
+    <a href="#" className="block mb-8 text-lg text-sl-blue hover:underline">
       {label}
     </a>
   );
