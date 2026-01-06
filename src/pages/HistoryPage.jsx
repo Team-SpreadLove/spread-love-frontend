@@ -1,3 +1,5 @@
+import DeleteModal from "../components/DeleteModal";
+
 const HistoryPage = () => {
   return (
     <>
@@ -33,6 +35,7 @@ const HistoryPage = () => {
           <a href="/">2026년 1월 3일 기록</a>
         </li>
       </ul>
+      <DeleteModal />
     </>
   );
 };
