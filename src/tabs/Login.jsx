@@ -6,8 +6,8 @@ const Login = () => {
       <div className="mb-8">
         <Logo iconSize={128} textSize={64} spacing="ml-2" />
       </div>
-      <button type="button">
-        <img src="/images/icons/google-signin.svg" alt="Google로 로그인" className="h-12" />
+      <button type="button" aria-label="Google로 로그인">
+        <img src="/images/icons/google-signin.svg" alt="" aria-hidden="true" className="h-12" />
       </button>
     </div>
   );
