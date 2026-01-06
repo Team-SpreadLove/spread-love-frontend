@@ -8,3 +8,7 @@
   --color-sl-gray-light: #d1d5db;
   --color-sl-gray-dark: #4b5563;
 }
+
+.text-\[64px\] {
+  font-size: 64px;
+}
