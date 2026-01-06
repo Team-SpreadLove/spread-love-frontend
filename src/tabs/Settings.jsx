@@ -1,4 +1,4 @@
-import SidebarButton from "../components/SidebarButton.jsx";
+import SettingSidebarLink from "../components/SettingSidebarLink.jsx";
 import GeneralPage from "../pages/GeneralPage.jsx";
 import AccessibilityPage from "../pages/AccessibilityPage.jsx";
 import InfoPage from "../pages/InfoPage.jsx";
@@ -16,9 +16,11 @@ const Settings = () => {
           <span className="text-2xl font-bold">SpreadLove</span>
         </div>
         <nav>
-          <SidebarButton label="일반" className="bg-blue-50 text-sl-blue" />
-          <SidebarButton label="저시력자 모드" className="text-sl-gray-dark" />
-          <SidebarButton label="정보" className="text-sl-gray-dark" />
+          <ul>
+            <SettingSidebarLink label="일반" />
+            <SettingSidebarLink label="저시력자 모드" />
+            <SettingSidebarLink label="정보" />
+          </ul>
         </nav>
       </aside>
       <main className="flex-1 p-8">
