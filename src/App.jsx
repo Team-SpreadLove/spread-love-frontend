@@ -7,7 +7,10 @@ const App = () => {
     <div className="flex flex-col h-screen gap-5 p-5">
       <Header />
       <main className="flex flex-col items-center justify-center gap-2 w-full h-full p-3 border border-sl-blue rounded-xl">
-        <button className="flex items-center justify-center gap-2 w-full h-[30px] bg-sl-blue border rounded-2xl font-medium text-white">
+        <button
+          type="button"
+          className="flex items-center justify-center gap-2 w-full h-[30px] bg-sl-blue border rounded-2xl font-medium text-white"
+        >
           <img src="/images/icons/spreadlove-summary-16.svg" alt="요약 아이콘" aria-hidden="true" />
           <span>이 페이지 요약하기</span>
         </button>
