@@ -1,7 +1,7 @@
 import { createMemoryRouter } from "react-router";
-import App from "./App";
-import SummaryPage from "./pages/SummaryPage";
-import HistoryPage from "./pages/HistoryPage";
+import App from "../App";
+import SummaryPage from "../pages/SummaryPage";
+import HistoryPage from "../pages/HistoryPage";
 
 export const router = createMemoryRouter([
   {
