@@ -1,16 +1,19 @@
 import { useState } from "react";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { SUMMARY_STATUS_FLOW } from "../constants/Index";
 
 const SummaryPage = () => {
-  const [status, setStatus] = useState("default");
+  const [statusIndex, setStatusIndex] = useState(0);
+
+  const currentStatus = SUMMARY_STATUS_FLOW[statusIndex];
 
   const handleSummaryClick = () => {
-    setStatus("loading");
+    setStatusIndex(1);
   };
 
   return (
     <>
-      {status === "default" && (
+      {currentStatus === "default" && (
         <button
           type="button"
           onClick={handleSummaryClick}
@@ -20,8 +23,8 @@ const SummaryPage = () => {
           <span>이 페이지 요약하기</span>
         </button>
       )}
-      {status === "loading" && <LoadingSpinner message={"페이지를 요약중입니다..."} />}
-      {status === "result" && (
+      {currentStatus === "loading" && <LoadingSpinner message={"페이지를 요약중입니다..."} />}
+      {currentStatus === "result" && (
         <div className="flex flex-col gap-4">
           <p className="text-[32px]">네이버</p>
           <p className="text-2xl">
