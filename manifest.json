@@ -23,5 +23,6 @@
     "type": "module"
   },
   "permissions": ["sidePanel"],
+  "host_permissions": ["http://localhost:3000/*"],
   "options_page": "src/tabs/settings.html"
 }
