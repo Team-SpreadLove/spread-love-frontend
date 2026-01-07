@@ -2,13 +2,18 @@ import { useState } from "react";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const SummaryPage = () => {
-  const [status] = useState("loading");
+  const [status, setStatus] = useState("default");
+
+  const handleSummaryClick = () => {
+    setStatus("loading");
+  };
 
   return (
     <>
       {status === "default" && (
         <button
           type="button"
+          onClick={handleSummaryClick}
           className="flex items-center justify-center gap-2 w-full h-[30px] bg-sl-blue border rounded-2xl font-medium text-white"
         >
           <img src="/images/icons/spreadlove-summary-16.svg" alt="요약 아이콘" aria-hidden="true" />
