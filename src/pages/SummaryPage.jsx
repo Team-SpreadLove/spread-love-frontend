@@ -4,13 +4,19 @@ import { SUMMARY_STATUS_FLOW } from "../constants/Index";
 import { mockSummaryResponse } from "../mocks/summaryMock";
 
 const SummaryPage = () => {
-  const [statusIndex, setStatusIndex] = useState(2);
-  const [summaryData] = useState(mockSummaryResponse.data);
+  const [statusIndex, setStatusIndex] = useState(0);
+  const [summaryData, setSummaryData] = useState(mockSummaryResponse.data);
 
   const currentStatus = SUMMARY_STATUS_FLOW[statusIndex];
 
   const handleSummaryClick = () => {
     setStatusIndex(1);
+
+    setTimeout(() => {
+      setSummaryData(mockSummaryResponse.data);
+
+      setStatusIndex(2);
+    }, 2000);
   };
 
   return (
