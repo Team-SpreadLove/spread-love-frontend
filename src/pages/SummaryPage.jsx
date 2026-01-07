@@ -1,9 +1,11 @@
 import { useState } from "react";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { SUMMARY_STATUS_FLOW } from "../constants/Index";
+import { mockSummaryResponse } from "../mocks/summaryMock";
 
 const SummaryPage = () => {
-  const [statusIndex, setStatusIndex] = useState(0);
+  const [statusIndex, setStatusIndex] = useState(2);
+  const [summaryData] = useState(mockSummaryResponse.data);
 
   const currentStatus = SUMMARY_STATUS_FLOW[statusIndex];
 
@@ -26,12 +28,8 @@ const SummaryPage = () => {
       {currentStatus === "loading" && <LoadingSpinner message={"페이지를 요약중입니다..."} />}
       {currentStatus === "result" && (
         <div className="flex flex-col gap-4">
-          <p className="text-[32px]">네이버</p>
-          <p className="text-2xl">
-            이 페이지는 검색을 중심으로 뉴스, 쇼핑, 콘텐츠로 빠르게 이동하게 해주는 국내 대표 포털의
-            시작 화면이다. 검색창을 통해 원하는 상품을 한번에 찾을 수 있다. 뉴스, 스포츠, 연예, 날씨
-            정보가 실시간으로 제공된다.
-          </p>
+          <h1 className="text-[32px]">{summaryData.title}</h1>
+          <p className="text-2xl">{summaryData.summary}</p>
         </div>
       )}
     </>
