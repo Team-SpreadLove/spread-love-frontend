@@ -1,22 +1,38 @@
 import { useState } from "react";
 import LoadingSpinner from "../components/LoadingSpinner";
-import { SUMMARY_STATUS_FLOW } from "../constants/Index";
-import { mockSummaryResponse } from "../mocks/summaryMock";
+import { SUMMARY_STATUS_FLOW, TEST_DATA } from "../constants/Index";
 
 const SummaryPage = () => {
   const [statusIndex, setStatusIndex] = useState(0);
-  const [summaryData, setSummaryData] = useState(mockSummaryResponse.data);
+  const [summaryData, setSummaryData] = useState(null);
 
   const currentStatus = SUMMARY_STATUS_FLOW[statusIndex];
 
-  const handleSummaryClick = () => {
+  const handleSummaryClick = async () => {
     setStatusIndex(1);
 
-    setTimeout(() => {
-      setSummaryData(mockSummaryResponse.data);
+    const testItem = TEST_DATA.NAVER_SPORTS;
+    const response = await fetch(testItem.image);
+    const testItemImageBlob = await response.blob();
 
-      setStatusIndex(2);
-    }, 2000);
+    chrome.runtime.sendMessage(
+      {
+        type: "SUMMARIZE",
+        payload: {
+          url: testItem.url,
+          imageBlob: testItemImageBlob,
+        },
+      },
+      (response) => {
+        if (response?.success) {
+          setSummaryData(response.data);
+          setStatusIndex(2);
+        } else {
+          console.error("요약 실패:", response?.error);
+          setStatusIndex(0);
+        }
+      },
+    );
   };
 
   return (
@@ -32,7 +48,7 @@ const SummaryPage = () => {
         </button>
       )}
       {currentStatus === "loading" && <LoadingSpinner message={"페이지를 요약중입니다..."} />}
-      {currentStatus === "result" && (
+      {currentStatus === "result" && summaryData && (
         <div className="flex flex-col gap-4">
           <h1 className="text-[32px]">{summaryData.title}</h1>
           <p className="text-2xl">{summaryData.summary}</p>
