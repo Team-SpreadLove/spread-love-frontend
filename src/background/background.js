@@ -3,7 +3,10 @@ import { api } from "../api/client.js";
 const sidePanelConfig = { openPanelOnActionClick: true };
 
 const handleSummarizeMessage = async (payload, sendResponse) => {
-  const { url, imageBlob } = payload;
+  const { url, imageBase64 } = payload;
+  const response = await fetch(imageBase64);
+  const imageBlob = await response.blob();
+
   const formData = new FormData();
 
   formData.append("url", url);
@@ -12,7 +15,7 @@ const handleSummarizeMessage = async (payload, sendResponse) => {
   try {
     const data = await api.post("summaries", { body: formData }).json();
 
-    sendResponse({ success: true, data });
+    sendResponse(data);
   } catch (error) {
     sendResponse({ success: false, error: error.message });
   }

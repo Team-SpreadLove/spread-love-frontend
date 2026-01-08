@@ -2,6 +2,15 @@ import { useState } from "react";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { SUMMARY_STATUS_FLOW, TEST_DATA } from "../constants/Index";
 
+const blobToBase64 = (blob) => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+
+    reader.onloadend = () => resolve(reader.result);
+    reader.readAsDataURL(blob);
+  });
+};
+
 const SummaryPage = () => {
   const [statusIndex, setStatusIndex] = useState(0);
   const [summaryData, setSummaryData] = useState(null);
@@ -11,16 +20,17 @@ const SummaryPage = () => {
   const handleSummaryClick = async () => {
     setStatusIndex(1);
 
-    const testItem = TEST_DATA.NAVER_SPORTS;
+    const testItem = TEST_DATA.MUSINSA;
     const response = await fetch(testItem.image);
     const testItemImageBlob = await response.blob();
+    const imageBase64 = await blobToBase64(testItemImageBlob);
 
     chrome.runtime.sendMessage(
       {
         type: "SUMMARIZE",
         payload: {
           url: testItem.url,
-          imageBlob: testItemImageBlob,
+          imageBase64: imageBase64,
         },
       },
       (response) => {
@@ -34,7 +44,6 @@ const SummaryPage = () => {
       },
     );
   };
-
   return (
     <>
       {currentStatus === "default" && (
@@ -57,5 +66,4 @@ const SummaryPage = () => {
     </>
   );
 };
-
 export default SummaryPage;
