@@ -1,4 +1,9 @@
-const SUMMARY_STATUS_FLOW = ["default", "loading", "result"];
+const SUMMARY_STATUS = {
+  DEFAULT: "default",
+  LOADING: "loading",
+  RESULT: "result",
+};
+
 const TEST_DATA = {
   YONHAP_NEWS: {
     url: "https://www.yna.co.kr/view/AKR20231213165600007",
@@ -14,4 +19,4 @@ const TEST_DATA = {
   },
 };
 
-export { SUMMARY_STATUS_FLOW, TEST_DATA };
+export { SUMMARY_STATUS, TEST_DATA };

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import LoadingSpinner from "../components/LoadingSpinner";
-import { SUMMARY_STATUS_FLOW, TEST_DATA } from "../constants/Index";
+import { SUMMARY_STATUS, TEST_DATA } from "../constants/Index";
 
 const blobToBase64 = (blob) => {
   return new Promise((resolve) => {
@@ -12,13 +12,11 @@ const blobToBase64 = (blob) => {
 };
 
 const SummaryPage = () => {
-  const [statusIndex, setStatusIndex] = useState(0);
+  const [status, setStatus] = useState(SUMMARY_STATUS.DEFAULT);
   const [summaryData, setSummaryData] = useState(null);
 
-  const currentStatus = SUMMARY_STATUS_FLOW[statusIndex];
-
   const handleSummaryClick = async () => {
-    setStatusIndex(1);
+    setStatus(SUMMARY_STATUS.LOADING);
 
     const testItem = TEST_DATA.MUSINSA;
     const response = await fetch(testItem.image);
@@ -36,17 +34,17 @@ const SummaryPage = () => {
       (response) => {
         if (response?.success) {
           setSummaryData(response.data);
-          setStatusIndex(2);
+          setStatus(SUMMARY_STATUS.RESULT);
         } else {
           console.error("요약 실패:", response?.error);
-          setStatusIndex(0);
+          setStatus(SUMMARY_STATUS.DEFAULT);
         }
       },
     );
   };
   return (
     <>
-      {currentStatus === "default" && (
+      {status === SUMMARY_STATUS.DEFAULT && (
         <button
           type="button"
           onClick={handleSummaryClick}
@@ -56,8 +54,8 @@ const SummaryPage = () => {
           <span>이 페이지 요약하기</span>
         </button>
       )}
-      {currentStatus === "loading" && <LoadingSpinner message={"페이지를 요약중입니다..."} />}
-      {currentStatus === "result" && summaryData && (
+      {status === SUMMARY_STATUS.LOADING && <LoadingSpinner message={"페이지를 요약중입니다..."} />}
+      {status === SUMMARY_STATUS.RESULT && summaryData && (
         <div className="flex flex-col gap-4">
           <h1 className="text-[32px]">{summaryData.title}</h1>
           <p className="text-2xl">{summaryData.summary}</p>
