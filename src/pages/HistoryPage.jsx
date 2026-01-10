@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import EmptyState from "../components/EmptyState";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const HistoryPage = () => {
@@ -28,6 +29,10 @@ const HistoryPage = () => {
         <LoadingSpinner message={"히스토리를 불러오는 중입니다..."} />
       </div>
     );
+  }
+
+  if (histories.length === 0) {
+    return <EmptyState message={"기록이 없습니다"} />;
   }
 
   return (
