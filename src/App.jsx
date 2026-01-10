@@ -6,7 +6,7 @@ const App = () => {
   return (
     <div className="flex flex-col h-screen gap-5 p-5">
       <Header />
-      <main className="flex flex-col items-center justify-center gap-2 w-full h-full p-3 border border-sl-blue rounded-xl">
+      <main className="flex flex-col items-center gap-2 w-full h-full p-3 border border-sl-blue rounded-xl overflow-y-auto">
         <Outlet />
       </main>
       <Footer />

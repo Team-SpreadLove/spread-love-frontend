@@ -43,7 +43,7 @@ const SummaryPage = () => {
     );
   };
   return (
-    <>
+    <div className="flex flex-col items-center justify-center w-full h-full">
       {status === SUMMARY_STATUS.DEFAULT && (
         <button
           type="button"
@@ -61,7 +61,7 @@ const SummaryPage = () => {
           <p className="text-2xl">{summaryData.summary}</p>
         </div>
       )}
-    </>
+    </div>
   );
 };
 export default SummaryPage;
