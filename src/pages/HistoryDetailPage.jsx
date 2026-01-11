@@ -13,12 +13,12 @@ const HistoryDetailPage = () => {
     chrome.runtime.sendMessage(
       { type: "FETCH_HISTORY_DETAIL", payload: { historyId: id } },
       (response) => {
-        if (isMounted) {
-          if (response?.success) {
-            setHistory(response.data);
-          }
-          setIsLoading(false);
+        if (!isMounted) return;
+
+        if (response?.success) {
+          setHistory(response.data);
         }
+        setIsLoading(false);
       },
     );
 
