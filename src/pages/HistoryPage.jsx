@@ -10,12 +10,12 @@ const HistoryPage = () => {
     let isMounted = true;
 
     chrome.runtime.sendMessage({ type: "FETCH_HISTORIES" }, (response) => {
-      if (isMounted) {
-        if (response?.success) {
-          setHistories(response.data.histories);
-        }
-        setIsLoading(false);
+      if (!isMounted) return;
+
+      if (response?.success) {
+        setHistories(response.data.histories);
       }
+      setIsLoading(false);
     });
 
     return () => {
