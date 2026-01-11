@@ -1,9 +1,14 @@
-const Button = ({ children, bgColor, borderColor, textColor = "text-sl-black" }) => {
-  return (
-    <button
-      type="button"
-      className={`w-[65px] h-[30px] ${bgColor} border ${borderColor} rounded-2xl font-medium ${textColor}`}
-    >
+import { Link } from "react-router";
+
+const Button = ({ children, bgColor, borderColor, textColor = "text-sl-black", to }) => {
+  const className = `w-[65px] h-[30px] ${bgColor} border ${borderColor} rounded-2xl font-medium ${textColor}`;
+
+  return to ? (
+    <Link to={to} className={className}>
+      {children}
+    </Link>
+  ) : (
+    <button type="button" className={className}>
       {children}
     </button>
   );
