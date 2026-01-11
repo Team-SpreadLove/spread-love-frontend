@@ -39,16 +39,19 @@ const HistoryPage = () => {
   return (
     <ul className="flex flex-col w-full gap-3">
       {histories.map((history) => (
-        <Link key={history.id} to={`/history/${history.id}`}>
-          <li className="w-full h-10 px-4 bg-sl-blue rounded-2xl text-base text-sl-white truncate leading-10 text-center">
+        <li key={history.id}>
+          <Link
+            to={`/history/${history.id}`}
+            className="block w-full h-10 px-4 bg-sl-blue rounded-2xl text-base text-sl-white truncate leading-10 text-center"
+          >
             {new Date(history.createdAt).toLocaleDateString("ko-KR", {
               year: "numeric",
               month: "long",
               day: "numeric",
             })}{" "}
             - {history.contents.title}
-          </li>
-        </Link>
+          </Link>
+        </li>
       ))}
     </ul>
   );
