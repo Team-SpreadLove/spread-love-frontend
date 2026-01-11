@@ -24,13 +24,14 @@ const handleSummarizeMessage = async (payload, sendResponse) => {
 const handleFetchHistories = async (sendResponse) => {
   try {
     const data = await api.get("histories").json();
+
     sendResponse(data);
   } catch (error) {
     sendResponse({ success: false, error: error.message });
   }
 };
 
-const messageHandler = (message, sender, sendResponse) => {
+const handleMessage = (message, sender, sendResponse) => {
   if (message.type === "SUMMARIZE") {
     handleSummarizeMessage(message.payload, sendResponse);
     return true;
@@ -44,7 +45,7 @@ const messageHandler = (message, sender, sendResponse) => {
 
 const init = () => {
   chrome.sidePanel.setPanelBehavior(sidePanelConfig).catch((error) => console.error(error));
-  chrome.runtime.onMessage.addListener(messageHandler);
+  chrome.runtime.onMessage.addListener(handleMessage);
 };
 
 init();

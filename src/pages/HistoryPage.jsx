@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import EmptyState from "../components/EmptyState";
+import NoData from "../components/NoData";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const HistoryPage = () => {
@@ -32,7 +32,7 @@ const HistoryPage = () => {
   }
 
   if (histories.length === 0) {
-    return <EmptyState message={"기록이 없습니다"} />;
+    return <NoData message={"기록이 없습니다"} />;
   }
 
   return (
