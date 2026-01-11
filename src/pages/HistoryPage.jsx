@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router";
 import NoData from "../components/NoData";
 import LoadingSpinner from "../components/LoadingSpinner";
 
@@ -26,7 +27,7 @@ const HistoryPage = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center w-full h-full">
-        <LoadingSpinner message={"히스토리를 불러오는 중입니다..."} />
+        <LoadingSpinner message={"전체 목록을 불러오는 중입니다..."} />
       </div>
     );
   }
@@ -38,17 +39,16 @@ const HistoryPage = () => {
   return (
     <ul className="flex flex-col w-full gap-3">
       {histories.map((history) => (
-        <li
-          key={history.id}
-          className="flex justify-center items-center w-full h-10 bg-sl-blue rounded-2xl text-base text-sl-white"
-        >
-          {new Date(history.createdAt).toLocaleDateString("ko-KR", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}{" "}
-          - {history.contents.title}
-        </li>
+        <Link key={history.id} to={`/history/${history.id}`}>
+          <li className="w-full h-10 px-4 bg-sl-blue rounded-2xl text-base text-sl-white truncate leading-10 text-center">
+            {new Date(history.createdAt).toLocaleDateString("ko-KR", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}{" "}
+            - {history.contents.title}
+          </li>
+        </Link>
       ))}
     </ul>
   );
