@@ -1,14 +1,29 @@
 import Button from "./Button";
+import { SUMMARY_STATUS } from "../constants/index.js";
 
-const Footer = () => {
+const Footer = ({ isLoggedIn, currentPath, summaryStatus }) => {
+  const isLoading = summaryStatus === SUMMARY_STATUS.LOADING;
+  const isResult = summaryStatus === SUMMARY_STATUS.RESULT;
+
+  const isSummaryPage = currentPath === "/";
+  const isHistoryDetailPage = currentPath.startsWith("/history/");
+
+  const isSaveButtonVisible = !isLoading && ((isSummaryPage && isResult) || isHistoryDetailPage);
+  const isDeleteButtonVisible =
+    !isLoading && isLoggedIn && ((isSummaryPage && isResult) || isHistoryDetailPage);
+
   return (
     <footer className="flex justify-end gap-x-2">
-      <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
-        저장
-      </Button>
-      <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
-        삭제
-      </Button>
+      {isSaveButtonVisible && (
+        <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
+          저장
+        </Button>
+      )}
+      {isDeleteButtonVisible && (
+        <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
+          삭제
+        </Button>
+      )}
       <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
         닫기
       </Button>
