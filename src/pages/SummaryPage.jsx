@@ -34,12 +34,19 @@ const SummaryPage = () => {
       },
       (response) => {
         if (response?.success) {
-          if (summaryStatus !== SUMMARY_STATUS.LOADING) return;
           setSummaryData(response.data);
-          setSummaryStatus(SUMMARY_STATUS.RESULT);
+
+          setSummaryStatus((currentStatus) => {
+            if (currentStatus !== SUMMARY_STATUS.LOADING) {
+              return currentStatus;
+            }
+
+            return SUMMARY_STATUS.RESULT;
+          });
         } else {
           console.error("요약 실패:", response?.error);
-          setSummaryStatus(SUMMARY_STATUS.DEFAULT);
+
+          return SUMMARY_STATUS.DEFAULT;
         }
       },
     );

@@ -43,7 +43,7 @@ const App = () => {
         onLogoClick={handleLogoClick}
       />
       <main className="flex flex-col items-center gap-2 w-full h-full p-3 border border-sl-blue rounded-xl overflow-y-auto">
-        <Outlet context={{ isLoggedIn, summaryStatus, setSummaryStatus }} />
+        <Outlet context={{ summaryStatus, setSummaryStatus }} />
       </main>
       <Footer
         isLoggedIn={isLoggedIn}
