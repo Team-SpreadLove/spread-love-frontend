@@ -1,17 +1,57 @@
 import { useEffect, useState } from "react";
-import { Outlet, useLocation } from "react-router";
+import { Outlet, useLocation, useNavigate, matchPath } from "react-router";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import DeleteModal from "./components/DeleteModal";
 import { SUMMARY_STATUS } from "./constants/index.js";
 
 const App = () => {
-  const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [summaryStatus, setSummaryStatus] = useState(SUMMARY_STATUS.DEFAULT);
   const [summaryData, setSummaryData] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const handleLogoClick = () => {
     setSummaryStatus(SUMMARY_STATUS.DEFAULT);
+  };
+
+  const handleFooterDeleteButton = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalCancelButton = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleModalDeleteButton = async () => {
+    const getHistoryId = () => {
+      if (location.pathname === "/") {
+        return summaryData.historyId;
+      }
+
+      if (location.pathname.startsWith("/history/")) {
+        const match = matchPath("/history/:id", location.pathname);
+
+        return match.params.id;
+      }
+
+      return null;
+    };
+
+    getHistoryId();
+    setIsModalOpen(false);
+
+    if (location.pathname === "/") {
+      setSummaryStatus(SUMMARY_STATUS.DEFAULT);
+      setSummaryData(null);
+    }
+
+    if (location.pathname.startsWith("/history/")) {
+      navigate("/history");
+    }
   };
 
   useEffect(() => {
@@ -50,6 +90,12 @@ const App = () => {
         isLoggedIn={isLoggedIn}
         currentPath={location.pathname}
         summaryStatus={summaryStatus}
+        onDeleteClick={handleFooterDeleteButton}
+      />
+      <DeleteModal
+        isOpen={isModalOpen}
+        onCancel={handleModalCancelButton}
+        onDelete={handleModalDeleteButton}
       />
     </div>
   );

@@ -1,7 +1,7 @@
 import Button from "./Button";
 import { SUMMARY_STATUS } from "../constants/index.js";
 
-const Footer = ({ isLoggedIn, currentPath, summaryStatus }) => {
+const Footer = ({ isLoggedIn, currentPath, summaryStatus, onDeleteClick }) => {
   const isLoading = summaryStatus === SUMMARY_STATUS.LOADING;
   const isResult = summaryStatus === SUMMARY_STATUS.RESULT;
 
@@ -20,7 +20,7 @@ const Footer = ({ isLoggedIn, currentPath, summaryStatus }) => {
         </Button>
       )}
       {isDeleteButtonVisible && (
-        <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
+        <Button bgColor="bg-sl-white" borderColor="border-sl-blue" onClick={onDeleteClick}>
           삭제
         </Button>
       )}
