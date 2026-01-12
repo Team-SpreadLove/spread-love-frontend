@@ -40,19 +40,38 @@ const handleFetchHistoryDetail = async (payload, sendResponse) => {
   }
 };
 
+const handleDeleteHistory = async (payload, sendResponse) => {
+  try {
+    const data = await api.delete(`histories/${payload.historyId}`).json();
+
+    sendResponse(data);
+  } catch (error) {
+    sendResponse({ success: false, error: error.message });
+  }
+};
+
 const handleMessage = (message, sender, sendResponse) => {
   if (message.type === "SUMMARIZE") {
     handleSummarizeMessage(message.payload, sendResponse);
+
+    return true;
+  }
+
+  if (message.type === "DELETE_HISTORY") {
+    handleDeleteHistory(message.payload, sendResponse);
+
     return true;
   }
 
   if (message.type === "FETCH_HISTORIES") {
     handleFetchHistories(sendResponse);
+
     return true;
   }
 
   if (message.type === "FETCH_HISTORY_DETAIL") {
     handleFetchHistoryDetail(message.payload, sendResponse);
+
     return true;
   }
 };
