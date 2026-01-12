@@ -8,6 +8,7 @@ const App = () => {
   const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [summaryStatus, setSummaryStatus] = useState(SUMMARY_STATUS.DEFAULT);
+  const [summaryData, setSummaryData] = useState(null);
 
   const handleLogoClick = () => {
     setSummaryStatus(SUMMARY_STATUS.DEFAULT);
@@ -43,7 +44,7 @@ const App = () => {
         onLogoClick={handleLogoClick}
       />
       <main className="flex flex-col items-center gap-2 w-full h-full p-3 border border-sl-blue rounded-xl overflow-y-auto">
-        <Outlet context={{ summaryStatus, setSummaryStatus }} />
+        <Outlet context={{ summaryStatus, setSummaryStatus, summaryData, setSummaryData }} />
       </main>
       <Footer
         isLoggedIn={isLoggedIn}

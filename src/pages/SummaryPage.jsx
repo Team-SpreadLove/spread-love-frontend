@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useOutletContext } from "react-router";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { SUMMARY_STATUS, TEST_DATA } from "../constants/index";
@@ -13,8 +12,7 @@ const blobToBase64 = (blob) => {
 };
 
 const SummaryPage = () => {
-  const { summaryStatus, setSummaryStatus } = useOutletContext();
-  const [summaryData, setSummaryData] = useState(null);
+  const { summaryStatus, setSummaryStatus, summaryData, setSummaryData } = useOutletContext();
 
   const handleSummaryClick = async () => {
     setSummaryStatus(SUMMARY_STATUS.LOADING);
