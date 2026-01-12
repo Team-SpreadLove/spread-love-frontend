@@ -14,6 +14,32 @@ const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const getHistoryId = () => {
+    if (location.pathname === "/") {
+      return summaryData.historyId;
+    }
+
+    if (location.pathname.startsWith("/history/")) {
+      const match = matchPath("/history/:id", location.pathname);
+      return match.params.id;
+    }
+
+    return null;
+  };
+
+  const afterDeleteAction = () => {
+    setIsModalOpen(false);
+
+    if (location.pathname === "/") {
+      setSummaryStatus(SUMMARY_STATUS.DEFAULT);
+      setSummaryData(null);
+    }
+
+    if (location.pathname.startsWith("/history/")) {
+      navigate("/history");
+    }
+  };
+
   const handleLogoClick = () => {
     setSummaryStatus(SUMMARY_STATUS.DEFAULT);
   };
@@ -26,32 +52,19 @@ const App = () => {
     setIsModalOpen(false);
   };
 
-  const handleModalDeleteButton = async () => {
-    const getHistoryId = () => {
-      if (location.pathname === "/") {
-        return summaryData.historyId;
-      }
+  const handleModalDeleteButton = () => {
+    const historyId = getHistoryId();
+    chrome.runtime.sendMessage(
+      {
+        type: "DELETE_HISTORY",
+        payload: { historyId },
+      },
+      (response) => {
+        if (!response.success) return;
 
-      if (location.pathname.startsWith("/history/")) {
-        const match = matchPath("/history/:id", location.pathname);
-
-        return match.params.id;
-      }
-
-      return null;
-    };
-
-    getHistoryId();
-    setIsModalOpen(false);
-
-    if (location.pathname === "/") {
-      setSummaryStatus(SUMMARY_STATUS.DEFAULT);
-      setSummaryData(null);
-    }
-
-    if (location.pathname.startsWith("/history/")) {
-      navigate("/history");
-    }
+        afterDeleteAction();
+      },
+    );
   };
 
   useEffect(() => {
