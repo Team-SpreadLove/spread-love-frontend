@@ -1,6 +1,8 @@
 import Button from "./Button";
 
-const DeleteModal = () => {
+const DeleteModal = ({ isOpen, onCancel, onDelete }) => {
+  if (!isOpen) return null;
+
   return (
     <div className="fixed inset-0 z-10 flex items-end justify-center">
       <div className="absolute inset-0 bg-sl-black/85"></div>
@@ -10,10 +12,15 @@ const DeleteModal = () => {
           이 채팅을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.
         </p>
         <div className="flex justify-end gap-3">
-          <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
+          <Button bgColor="bg-sl-white" borderColor="border-sl-blue" onClick={onCancel}>
             취소
           </Button>
-          <Button bgColor="bg-sl-red" borderColor="border-sl-red" textColor="text-sl-white">
+          <Button
+            bgColor="bg-sl-red"
+            borderColor="border-sl-red"
+            textColor="text-sl-white"
+            onClick={onDelete}
+          >
             삭제
           </Button>
         </div>
