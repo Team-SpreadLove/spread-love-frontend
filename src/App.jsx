@@ -1,15 +1,40 @@
-import { Outlet } from "react-router";
+import { useEffect, useState } from "react";
+import { Outlet, useLocation } from "react-router";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
 const App = () => {
+  const location = useLocation();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const tempToken = import.meta.env.VITE_TEMP_AUTH_TOKEN;
+
+    let isMounted = true;
+
+    // TODO: 로그인 연동 후 삭제
+    if (isMounted && tempToken) {
+      chrome.storage.local.set({ token: tempToken });
+    }
+
+    chrome.storage.local.get("token", (result) => {
+      if (isMounted) {
+        setIsLoggedIn(!!result.token);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <div className="flex flex-col h-screen gap-5 p-5">
-      <Header />
+      <Header isLoggedIn={isLoggedIn} />
       <main className="flex flex-col items-center gap-2 w-full h-full p-3 border border-sl-blue rounded-xl overflow-y-auto">
-        <Outlet />
+        <Outlet context={{ isLoggedIn }} />
       </main>
-      <Footer />
+      <Footer isLoggedIn={isLoggedIn} currentPath={location.pathname} />
     </div>
   );
 };
