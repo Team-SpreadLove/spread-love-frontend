@@ -34,6 +34,7 @@ const SummaryPage = () => {
       },
       (response) => {
         if (response?.success) {
+          if (summaryStatus !== SUMMARY_STATUS.LOADING) return;
           setSummaryData(response.data);
           setSummaryStatus(SUMMARY_STATUS.RESULT);
         } else {
@@ -43,6 +44,7 @@ const SummaryPage = () => {
       },
     );
   };
+
   return (
     <div className="flex flex-col items-center justify-center w-full h-full">
       {summaryStatus === SUMMARY_STATUS.DEFAULT && (

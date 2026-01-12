@@ -1,6 +1,8 @@
-const Logo = ({ iconSize, textSize, spacing }) => {
+import { Link } from "react-router";
+
+const Logo = ({ iconSize, textSize, spacing, onClick }) => {
   return (
-    <a href="/" className="flex">
+    <Link to="/" onClick={onClick} className="flex">
       <img
         src={`/images/icons/spreadlove-icon-${iconSize}.png`}
         alt="스프레드 러브"
@@ -13,7 +15,7 @@ const Logo = ({ iconSize, textSize, spacing }) => {
       <span aria-hidden="true" className={`mt-0.5 font-semibold text-[${textSize}px] text-sl-red`}>
         Love
       </span>
-    </a>
+    </Link>
   );
 };
 

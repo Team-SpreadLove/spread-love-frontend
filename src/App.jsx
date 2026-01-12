@@ -9,6 +9,10 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [summaryStatus, setSummaryStatus] = useState(SUMMARY_STATUS.DEFAULT);
 
+  const handleLogoClick = () => {
+    setSummaryStatus(SUMMARY_STATUS.DEFAULT);
+  };
+
   useEffect(() => {
     const tempToken = import.meta.env.VITE_TEMP_AUTH_TOKEN;
 
@@ -32,7 +36,12 @@ const App = () => {
 
   return (
     <div className="flex flex-col h-screen gap-5 p-5">
-      <Header isLoggedIn={isLoggedIn} summaryStatus={summaryStatus} />
+      <Header
+        isLoggedIn={isLoggedIn}
+        summaryStatus={summaryStatus}
+        currentPath={location.pathname}
+        onLogoClick={handleLogoClick}
+      />
       <main className="flex flex-col items-center gap-2 w-full h-full p-3 border border-sl-blue rounded-xl overflow-y-auto">
         <Outlet context={{ isLoggedIn, summaryStatus, setSummaryStatus }} />
       </main>
