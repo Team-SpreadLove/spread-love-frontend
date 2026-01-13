@@ -55,14 +55,11 @@ const handleAnalyzeImage = async (payload, sendResponse) => {
   const { imageUrl, pageUrl } = payload;
 
   try {
-    const imageResponse = await fetch(imageUrl);
-    const imageBlob = await imageResponse.blob();
-
-    const formData = new FormData();
-    formData.append("image", imageBlob, "analyzed-image.png");
-    formData.append("pageUrl", pageUrl);
-
-    const data = await api.post("analyses", { body: formData }).json();
+    const data = await api
+      .post("analyses", {
+        json: { imageUrl, pageUrl },
+      })
+      .json();
 
     sendResponse({ success: true, data });
   } catch (error) {
