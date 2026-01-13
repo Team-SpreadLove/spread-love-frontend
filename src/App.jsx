@@ -44,6 +44,11 @@ const App = () => {
     setSummaryStatus(SUMMARY_STATUS.DEFAULT);
   };
 
+  const handleLoginButtonClick = () => {
+    const loginUrl = chrome.runtime.getURL("src/tabs/login.html");
+    chrome.tabs.create({ url: loginUrl });
+  };
+
   const handleFooterDeleteButton = () => {
     setIsModalOpen(true);
   };
@@ -68,15 +73,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    const tempToken = import.meta.env.VITE_TEMP_AUTH_TOKEN;
-
     let isMounted = true;
-
-    // TODO: 로그인 연동 후 삭제
-    if (isMounted && tempToken) {
-      chrome.storage.local.set({ token: tempToken });
-    }
-
     chrome.storage.local.get("token", (result) => {
       if (isMounted) {
         setIsLoggedIn(!!result.token);
@@ -95,6 +92,7 @@ const App = () => {
         summaryStatus={summaryStatus}
         currentPath={location.pathname}
         onLogoClick={handleLogoClick}
+        onLoginClick={handleLoginButtonClick}
       />
       <main className="flex flex-col items-center gap-2 w-full h-full p-3 border border-sl-blue rounded-xl overflow-y-auto">
         <Outlet context={{ summaryStatus, setSummaryStatus, summaryData, setSummaryData }} />

@@ -2,7 +2,7 @@ import Logo from "./Logo";
 import Button from "./Button";
 import { SUMMARY_STATUS } from "../constants/index.js";
 
-const Header = ({ isLoggedIn, summaryStatus, currentPath, onLogoClick }) => {
+const Header = ({ isLoggedIn, summaryStatus, currentPath, onLogoClick, onLoginClick }) => {
   const isLoading = summaryStatus === SUMMARY_STATUS.LOADING;
   const isHistoryPage = currentPath.startsWith("/history");
   const isHistoryButtonVisible = !isLoading && isLoggedIn && !isHistoryPage;
@@ -18,7 +18,7 @@ const Header = ({ isLoggedIn, summaryStatus, currentPath, onLogoClick }) => {
             </Button>
           )}
           {!isLoading && !isLoggedIn && (
-            <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
+            <Button bgColor="bg-sl-white" borderColor="border-sl-blue" onClick={onLoginClick}>
               로그인
             </Button>
           )}
