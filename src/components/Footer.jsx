@@ -1,16 +1,22 @@
 import Button from "./Button";
-import { SUMMARY_STATUS } from "../constants/index.js";
+import { SUMMARY_STATUS, IMAGE_ANALYSIS_STATUS } from "../constants/index.js";
 
-const Footer = ({ isLoggedIn, currentPath, summaryStatus, onDeleteClick }) => {
+const Footer = ({ isLoggedIn, currentPath, summaryStatus, analysisStatus, onDeleteClick }) => {
   const isLoading = summaryStatus === SUMMARY_STATUS.LOADING;
   const isResult = summaryStatus === SUMMARY_STATUS.RESULT;
 
   const isSummaryPage = currentPath === "/";
   const isHistoryDetailPage = currentPath.startsWith("/history/");
 
-  const isSaveButtonVisible = !isLoading && ((isSummaryPage && isResult) || isHistoryDetailPage);
+  const isAnalysisPage = currentPath === "/analysis";
+  const isAnalysisResult = analysisStatus === IMAGE_ANALYSIS_STATUS.RESULT;
+  const isSaveButtonVisible =
+    !isLoading &&
+    ((isSummaryPage && isResult) || isHistoryDetailPage || (isAnalysisPage && isAnalysisResult));
   const isDeleteButtonVisible =
-    !isLoading && isLoggedIn && ((isSummaryPage && isResult) || isHistoryDetailPage);
+    !isLoading &&
+    isLoggedIn &&
+    ((isSummaryPage && isResult) || isHistoryDetailPage || (isAnalysisPage && isAnalysisResult));
 
   return (
     <footer className="flex justify-end gap-x-2">

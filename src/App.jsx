@@ -3,13 +3,15 @@ import { Outlet, useLocation, useNavigate, matchPath } from "react-router";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import DeleteModal from "./components/DeleteModal";
-import { SUMMARY_STATUS } from "./constants/index.js";
+import { SUMMARY_STATUS, IMAGE_ANALYSIS_STATUS } from "./constants/index.js";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [summaryStatus, setSummaryStatus] = useState(SUMMARY_STATUS.DEFAULT);
   const [summaryData, setSummaryData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [analysisStatus, setAnalysisStatus] = useState(IMAGE_ANALYSIS_STATUS.LOADING);
+  const [analysisData, setAnalysisData] = useState(null);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -22,6 +24,10 @@ const App = () => {
     if (location.pathname.startsWith("/history/")) {
       const match = matchPath("/history/:id", location.pathname);
       return match.params.id;
+    }
+
+    if (location.pathname === "/analysis") {
+      return analysisData?.data?.historyId;
     }
 
     return null;
@@ -37,6 +43,12 @@ const App = () => {
 
     if (location.pathname.startsWith("/history/")) {
       navigate("/history");
+    }
+
+    if (location.pathname === "/analysis") {
+      setAnalysisStatus(IMAGE_ANALYSIS_STATUS.LOADING);
+      setAnalysisData(null);
+      navigate("/");
     }
   };
 
@@ -88,6 +100,24 @@ const App = () => {
     };
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const checkPendingAnalysis = async () => {
+      const { pendingImageAnalysis } = await chrome.storage.local.get("pendingImageAnalysis");
+
+      if (isMounted && pendingImageAnalysis) {
+        navigate("/analysis");
+      }
+    };
+
+    checkPendingAnalysis();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <div className="flex flex-col h-screen gap-5 p-5">
       <Header
@@ -97,12 +127,24 @@ const App = () => {
         onLogoClick={handleLogoClick}
       />
       <main className="flex flex-col items-center gap-2 w-full h-full p-3 border border-sl-blue rounded-xl overflow-y-auto">
-        <Outlet context={{ summaryStatus, setSummaryStatus, summaryData, setSummaryData }} />
+        <Outlet
+          context={{
+            summaryStatus,
+            setSummaryStatus,
+            summaryData,
+            setSummaryData,
+            analysisStatus,
+            setAnalysisStatus,
+            analysisData,
+            setAnalysisData,
+          }}
+        />
       </main>
       <Footer
         isLoggedIn={isLoggedIn}
         currentPath={location.pathname}
         summaryStatus={summaryStatus}
+        analysisStatus={analysisStatus}
         onDeleteClick={handleFooterDeleteButton}
       />
       <DeleteModal
