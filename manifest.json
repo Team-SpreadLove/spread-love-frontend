@@ -37,7 +37,7 @@
       "js": ["src/content/content.js"]
     }
   ],
-  "permissions": ["sidePanel", "storage"],
+  "permissions": ["sidePanel", "storage", "activeTab"],
   "host_permissions": ["http://localhost:3000/*", "<all_urls>"],
   "options_page": "src/tabs/settings.html"
 }
