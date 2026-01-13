@@ -1,6 +1,7 @@
 import { api } from "../api/client.js";
 
 const sidePanelConfig = { openPanelOnActionClick: true };
+const focusedImages = new Map();
 
 const handleSummarizeMessage = async (payload, sendResponse) => {
   const { url, imageBase64 } = payload;
@@ -50,7 +51,40 @@ const handleDeleteHistory = async (payload, sendResponse) => {
   }
 };
 
+const handleAnalyzeImage = async (payload, sendResponse) => {
+  const { imageUrl, pageUrl } = payload;
+
+  try {
+    const imageResponse = await fetch(imageUrl);
+    const imageBlob = await imageResponse.blob();
+
+    const formData = new FormData();
+    formData.append("image", imageBlob, "analyzed-image.png");
+    formData.append("pageUrl", pageUrl);
+
+    const data = await api.post("analyses", { body: formData }).json();
+
+    sendResponse({ success: true, data });
+  } catch (error) {
+    sendResponse({ success: false, error: error.message });
+  }
+};
 const handleMessage = (message, sender, sendResponse) => {
+  if (message.type === "IMAGE_FOCUSED") {
+    focusedImages.set(sender.tab.id, {
+      imageUrl: message.imageUrl,
+      pageUrl: message.pageUrl,
+    });
+
+    return true;
+  }
+
+  if (message.type === "IMAGE_UNFOCUSED") {
+    focusedImages.delete(sender.tab.id);
+
+    return true;
+  }
+
   if (message.type === "SUMMARIZE") {
     handleSummarizeMessage(message.payload, sendResponse);
 
@@ -74,11 +108,40 @@ const handleMessage = (message, sender, sendResponse) => {
 
     return true;
   }
+
+  if (message.type === "ANALYZE_IMAGE") {
+    handleAnalyzeImage(message.payload, sendResponse);
+
+    return true;
+  }
+};
+const handleAnalyzeImageCommand = async (tab) => {
+  const focusedImage = focusedImages.get(tab.id);
+
+  if (!focusedImage) {
+    return;
+  }
+
+  try {
+    await chrome.sidePanel.open({ tabId: tab.id });
+  } catch (error) {
+    console.error("[Spread Love] Side Panel 열기 실패:", error);
+    return;
+  }
+
+  await chrome.storage.local.remove("pendingImageAnalysis");
+  await chrome.storage.local.set({ pendingImageAnalysis: focusedImage });
 };
 
 const init = () => {
   chrome.sidePanel.setPanelBehavior(sidePanelConfig).catch((error) => console.error(error));
   chrome.runtime.onMessage.addListener(handleMessage);
+
+  chrome.commands.onCommand.addListener((command, tab) => {
+    if (command === "analyze-image") {
+      handleAnalyzeImageCommand(tab);
+    }
+  });
 };
 
 init();
