@@ -4,6 +4,12 @@ const SUMMARY_STATUS = {
   RESULT: "result",
 };
 
+const IMAGE_ANALYSIS_STATUS = {
+  LOADING: "loading",
+  RESULT: "result",
+  ERROR: "error",
+};
+
 const TEST_DATA = {
   YONHAP_NEWS: {
     url: "https://www.yna.co.kr/view/AKR20231213165600007",
@@ -19,4 +25,4 @@ const TEST_DATA = {
   },
 };
 
-export { SUMMARY_STATUS, TEST_DATA };
+export { SUMMARY_STATUS, IMAGE_ANALYSIS_STATUS, TEST_DATA };
