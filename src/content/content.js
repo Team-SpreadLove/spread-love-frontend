@@ -1,14 +1,17 @@
 const handleFocusIn = (event) => {
-  const element = event.target;
-  const hasAlt = element.alt && element.alt.trim();
+  const targetElement = event.target;
+  const imageElement =
+    (targetElement.tagName === "IMG" && targetElement) || targetElement.querySelector("img");
 
-  if (element.tagName !== "IMG") return;
+  if (!imageElement) return;
+
+  const hasAlt = imageElement.alt && imageElement.alt.trim();
 
   if (hasAlt) return;
 
   chrome.runtime.sendMessage({
     type: "IMAGE_FOCUSED",
-    imageUrl: element.currentSrc || element.src,
+    imageUrl: imageElement.currentSrc || imageElement.src,
     pageUrl: window.location.href,
   });
 };
