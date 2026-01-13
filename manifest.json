@@ -22,7 +22,22 @@
     "service_worker": "src/background/background.js",
     "type": "module"
   },
+  "commands": {
+    "analyze-image": {
+      "suggested_key": {
+        "default": "Alt+I",
+        "mac": "Alt+I"
+      },
+      "description": "포커스된 이미지 분석"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content/content.js"]
+    }
+  ],
   "permissions": ["sidePanel", "storage"],
-  "host_permissions": ["http://localhost:3000/*"],
+  "host_permissions": ["http://localhost:3000/*", "<all_urls>"],
   "options_page": "src/tabs/settings.html"
 }
