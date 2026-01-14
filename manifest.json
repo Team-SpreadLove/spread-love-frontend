@@ -38,6 +38,7 @@
     }
   ],
   "permissions": ["sidePanel", "storage", "activeTab"],
+  "optional_host_permissions": ["<all_urls>"],
   "host_permissions": ["http://localhost:3000/*"],
   "options_page": "src/tabs/settings.html"
 }
