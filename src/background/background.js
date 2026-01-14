@@ -3,16 +3,32 @@ import { api } from "../api/client.js";
 const sidePanelConfig = { openPanelOnActionClick: true };
 const focusedImages = new Map();
 
-const handleSummarizeMessage = async (payload, sendResponse) => {
-  const { url, imageBase64 } = payload;
-  const response = await fetch(imageBase64);
-  const imageBlob = await response.blob();
+const captureVisibleTab = () => {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.captureVisibleTab(null, { format: "png" }, (dataUrl) => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError.message));
 
-  const formData = new FormData();
-  formData.append("url", url);
-  formData.append("image", imageBlob, "screenshot.png");
+        return;
+      }
+      resolve(dataUrl);
+    });
+  });
+};
 
+const handleSummarizeMessage = async (sendResponse) => {
   try {
+    const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    const url = activeTab.url;
+
+    const imageBase64 = await captureVisibleTab();
+    const response = await fetch(imageBase64);
+    const imageBlob = await response.blob();
+
+    const formData = new FormData();
+    formData.append("url", url);
+    formData.append("image", imageBlob, "screenshot.png");
+
     const data = await api.post("summaries", { body: formData }).json();
 
     sendResponse(data);
@@ -83,7 +99,7 @@ const handleMessage = (message, sender, sendResponse) => {
   }
 
   if (message.type === "SUMMARIZE") {
-    handleSummarizeMessage(message.payload, sendResponse);
+    handleSummarizeMessage(sendResponse);
 
     return true;
   }

@@ -1,53 +1,39 @@
 import { useOutletContext } from "react-router";
 import LoadingSpinner from "../components/LoadingSpinner";
-import { SUMMARY_STATUS, TEST_DATA } from "../constants/index";
-
-const blobToBase64 = (blob) => {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-
-    reader.onloadend = () => resolve(reader.result);
-    reader.readAsDataURL(blob);
-  });
-};
+import { SUMMARY_STATUS } from "../constants/index";
+import { requestCapturePermission } from "../utils/permissions";
 
 const SummaryPage = () => {
   const { summaryStatus, setSummaryStatus, summaryData, setSummaryData } = useOutletContext();
 
   const handleSummaryClick = async () => {
+    const hasPermission = await requestCapturePermission();
+
+    if (!hasPermission) {
+      console.error("요약 실패: 화면 캡처 권한이 필요합니다.");
+
+      return;
+    }
+
     setSummaryStatus(SUMMARY_STATUS.LOADING);
 
-    const testItem = TEST_DATA.MUSINSA;
-    const response = await fetch(testItem.image);
-    const testItemImageBlob = await response.blob();
-    const imageBase64 = await blobToBase64(testItemImageBlob);
+    chrome.runtime.sendMessage({ type: "SUMMARIZE" }, (response) => {
+      if (response?.success) {
+        setSummaryData(response.data);
 
-    chrome.runtime.sendMessage(
-      {
-        type: "SUMMARIZE",
-        payload: {
-          url: testItem.url,
-          imageBase64: imageBase64,
-        },
-      },
-      (response) => {
-        if (response?.success) {
-          setSummaryData(response.data);
+        setSummaryStatus((currentStatus) => {
+          if (currentStatus !== SUMMARY_STATUS.LOADING) {
+            return currentStatus;
+          }
 
-          setSummaryStatus((currentStatus) => {
-            if (currentStatus !== SUMMARY_STATUS.LOADING) {
-              return currentStatus;
-            }
+          return SUMMARY_STATUS.RESULT;
+        });
+      } else {
+        console.error("요약 실패:", response?.error);
 
-            return SUMMARY_STATUS.RESULT;
-          });
-        } else {
-          console.error("요약 실패:", response?.error);
-
-          return SUMMARY_STATUS.DEFAULT;
-        }
-      },
-    );
+        setSummaryStatus(SUMMARY_STATUS.DEFAULT);
+      }
+    });
   };
 
   return (
