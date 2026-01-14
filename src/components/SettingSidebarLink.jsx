@@ -1,9 +1,16 @@
-const SettingSidebarLink = ({ label, href = "#" }) => {
+import { NavLink } from "react-router";
+
+const SettingSidebarLink = ({ label, to }) => {
   return (
     <li>
-      <a href={href} className="block w-full px-8 py-4 text-left text-lg text-sl-black">
+      <NavLink
+        to={to}
+        className={({ isActive }) =>
+          `block w-full px-8 py-4 text-left text-lg ${isActive ? "bg-sl-blue text-white" : "text-sl-black"}`
+        }
+      >
         {label}
-      </a>
+      </NavLink>
     </li>
   );
 };
