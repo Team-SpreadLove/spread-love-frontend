@@ -65,6 +65,10 @@ const App = () => {
     chrome.storage.local.remove("token");
   };
 
+  const handleSettingsButtonClick = () => {
+    chrome.runtime.openOptionsPage();
+  };
+
   const handleFooterDeleteButton = () => {
     setIsModalOpen(true);
   };
@@ -138,6 +142,7 @@ const App = () => {
         onLogoClick={handleLogoClick}
         onLoginClick={handleLoginButtonClick}
         onLogoutClick={handleLogoutButtonClick}
+        onSettingsClick={handleSettingsButtonClick}
       />
       <main className="flex flex-col items-center gap-2 w-full h-full p-3 border border-sl-blue rounded-xl overflow-y-auto">
         <Outlet

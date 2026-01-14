@@ -9,6 +9,7 @@ const Header = ({
   onLogoClick,
   onLoginClick,
   onLogoutClick,
+  onSettingsClick,
 }) => {
   const isLoading = summaryStatus === SUMMARY_STATUS.LOADING;
   const isHistoryPage = currentPath.startsWith("/history");
@@ -33,7 +34,7 @@ const Header = ({
               {isLoggedIn ? "로그아웃" : "로그인"}
             </Button>
           )}
-          <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
+          <Button bgColor="bg-sl-white" borderColor="border-sl-blue" onClick={onSettingsClick}>
             설정
           </Button>
         </div>
