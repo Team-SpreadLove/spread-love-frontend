@@ -24,14 +24,13 @@ const Header = ({
               기록
             </Button>
           )}
-          {!isLoading && !isLoggedIn && (
-            <Button bgColor="bg-sl-white" borderColor="border-sl-blue" onClick={onLoginClick}>
-              로그인
-            </Button>
-          )}
-          {!isLoading && isLoggedIn && (
-            <Button bgColor="bg-sl-white" borderColor="border-sl-blue" onClick={onLogoutClick}>
-              로그아웃
+          {!isLoading && (
+            <Button
+              bgColor="bg-sl-white"
+              borderColor="border-sl-blue"
+              onClick={isLoggedIn ? onLogoutClick : onLoginClick}
+            >
+              {isLoggedIn ? "로그아웃" : "로그인"}
             </Button>
           )}
           <Button bgColor="bg-sl-white" borderColor="border-sl-blue">

@@ -81,13 +81,13 @@ const App = () => {
 
     chrome.storage.local.get("token", (result) => {
       if (isMounted) {
-        setIsLoggedIn(!!result.token);
+        setIsLoggedIn(Boolean(result.token));
       }
     });
 
     const handleStorageChange = (changes) => {
       if (changes.token && isMounted) {
-        setIsLoggedIn(!!changes.token.newValue);
+        setIsLoggedIn(Boolean(changes.token.newValue));
       }
     };
 

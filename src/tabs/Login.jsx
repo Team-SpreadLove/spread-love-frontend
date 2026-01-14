@@ -4,9 +4,13 @@ import { supabase } from "../api/supabase";
 
 const Login = () => {
   useEffect(() => {
+    let isMounted = true;
+
     const hash = window.location.hash;
     if (hash && hash.includes("access_token")) {
       supabase.auth.getSession().then(({ data: { session } }) => {
+        if (!isMounted) return;
+
         if (session) {
           chrome.storage.local.set({ token: session.access_token }, () => {
             chrome.tabs.getCurrent((tab) => {
@@ -16,6 +20,10 @@ const Login = () => {
         }
       });
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleGoogleLogin = async () => {
@@ -34,7 +42,7 @@ const Login = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-sl-white">
       <div className="mb-8">
-        <Logo iconSize={128} textSize={64} spacing="ml-2" disableLink />
+        <Logo iconSize={128} textSize={64} spacing="ml-2" useRouter={false} />
       </div>
       <button type="button" aria-label="Google 계정으로 로그인" onClick={handleGoogleLogin}>
         <img src="/images/icons/google-signin.svg" alt="" aria-hidden="true" className="h-12" />

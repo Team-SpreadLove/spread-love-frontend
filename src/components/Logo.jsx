@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 
-const Logo = ({ iconSize, textSize, spacing, onClick, disableLink }) => {
+const Logo = ({ iconSize, textSize, spacing, onClick, useRouter = true }) => {
   const content = (
     <>
       <img
@@ -18,14 +18,12 @@ const Logo = ({ iconSize, textSize, spacing, onClick, disableLink }) => {
     </>
   );
 
-  return disableLink ? (
-    <div onClick={onClick} className="flex cursor-default">
-      {content}
-    </div>
-  ) : (
+  return useRouter ? (
     <Link to="/" onClick={onClick} className="flex">
       {content}
     </Link>
+  ) : (
+    <div className="flex">{content}</div>
   );
 };
 
