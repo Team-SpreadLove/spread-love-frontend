@@ -25,9 +25,13 @@ const handleSummarizeMessage = async (sendResponse) => {
     const response = await fetch(imageBase64);
     const imageBlob = await response.blob();
 
+    const { settings } = await chrome.storage.sync.get("settings");
+    const userSettings = settings || { length: "medium", persona: "default" };
+
     const formData = new FormData();
     formData.append("url", url);
     formData.append("image", imageBlob, "screenshot.png");
+    formData.append("settings", JSON.stringify(userSettings));
 
     const data = await api.post("summaries", { body: formData }).json();
 
@@ -71,9 +75,12 @@ const handleAnalyzeImage = async (payload, sendResponse) => {
   const { imageUrl, pageUrl } = payload;
 
   try {
+    const { settings } = await chrome.storage.sync.get("settings");
+    const userSettings = settings || { length: "medium", persona: "default" };
+
     const data = await api
       .post("analyses", {
-        json: { imageUrl, pageUrl },
+        json: { imageUrl, pageUrl, settings: userSettings },
       })
       .json();
 

@@ -10,6 +10,23 @@ const IMAGE_ANALYSIS_STATUS = {
   ERROR: "error",
 };
 
+const LENGTH_OPTIONS = [
+  { value: "short", label: "짧게" },
+  { value: "medium", label: "중간" },
+  { value: "long", label: "길게" },
+];
+
+const PERSONA_OPTIONS = [
+  { value: "friendly", label: "친근함" },
+  { value: "default", label: "기본" },
+  { value: "professional", label: "전문적" },
+];
+
+const DEFAULT_SETTINGS = {
+  length: "medium",
+  persona: "default",
+};
+
 const TEST_DATA = {
   YONHAP_NEWS: {
     url: "https://www.yna.co.kr/view/AKR20231213165600007",
@@ -25,4 +42,11 @@ const TEST_DATA = {
   },
 };
 
-export { SUMMARY_STATUS, IMAGE_ANALYSIS_STATUS, TEST_DATA };
+export {
+  SUMMARY_STATUS,
+  IMAGE_ANALYSIS_STATUS,
+  LENGTH_OPTIONS,
+  PERSONA_OPTIONS,
+  DEFAULT_SETTINGS,
+  TEST_DATA,
+};
