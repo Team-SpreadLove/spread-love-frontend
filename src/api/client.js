@@ -33,6 +33,13 @@ const api = ky.create({
         }
       },
     ],
+    afterResponse: [
+      async (request, options, response) => {
+        if (response.status === 429) {
+          await chrome.storage.local.set({ rateLimitExceeded: true });
+        }
+      },
+    ],
   },
 });
 

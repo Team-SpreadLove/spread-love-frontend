@@ -3,7 +3,7 @@ import { Outlet, useLocation, useNavigate, matchPath } from "react-router";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import DeleteModal from "./components/DeleteModal";
-import { SUMMARY_STATUS, IMAGE_ANALYSIS_STATUS } from "./constants/index.js";
+import { SUMMARY_STATUS, IMAGE_ANALYSIS_STATUS, ERROR_MESSAGES } from "./constants/index.js";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -104,6 +104,11 @@ const App = () => {
     const handleStorageChange = (changes) => {
       if (changes.token && isMounted) {
         setIsLoggedIn(Boolean(changes.token.newValue));
+      }
+
+      if (changes.rateLimitExceeded && changes.rateLimitExceeded.newValue === true && isMounted) {
+        alert(ERROR_MESSAGES.RATE_LIMIT_EXCEEDED);
+        chrome.storage.local.remove("rateLimitExceeded");
       }
     };
 

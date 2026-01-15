@@ -10,6 +10,10 @@ const IMAGE_ANALYSIS_STATUS = {
   ERROR: "error",
 };
 
+const ERROR_MESSAGES = {
+  RATE_LIMIT_EXCEEDED: "일일 사용 횟수를 초과했습니다.",
+};
+
 const LENGTH_OPTIONS = [
   { value: "short", label: "짧게" },
   { value: "medium", label: "중간" },
@@ -45,6 +49,7 @@ const TEST_DATA = {
 export {
   SUMMARY_STATUS,
   IMAGE_ANALYSIS_STATUS,
+  ERROR_MESSAGES,
   LENGTH_OPTIONS,
   PERSONA_OPTIONS,
   DEFAULT_SETTINGS,
