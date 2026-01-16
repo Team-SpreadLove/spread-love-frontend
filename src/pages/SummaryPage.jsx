@@ -1,28 +1,20 @@
-import { useOutletContext } from "react-router";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { SUMMARY_STATUS } from "../constants/index";
+import useResultStore from "../stores/useResultStore";
 
 const SummaryPage = () => {
-  const { summaryStatus, setSummaryStatus, summaryData, setSummaryData } = useOutletContext();
+  const { summaryStatus, summaryData, setSummaryLoading, setSummaryResult, resetSummary } =
+    useResultStore();
 
   const handleSummaryClick = async () => {
-    setSummaryStatus(SUMMARY_STATUS.LOADING);
+    setSummaryLoading();
 
     chrome.runtime.sendMessage({ type: "SUMMARIZE" }, (response) => {
       if (response?.success) {
-        setSummaryData(response.data);
-
-        setSummaryStatus((currentStatus) => {
-          if (currentStatus !== SUMMARY_STATUS.LOADING) {
-            return currentStatus;
-          }
-
-          return SUMMARY_STATUS.RESULT;
-        });
+        setSummaryResult(response.data);
       } else {
         console.error("요약 실패:", response?.error);
-
-        setSummaryStatus(SUMMARY_STATUS.DEFAULT);
+        resetSummary();
       }
     });
   };
@@ -51,4 +43,5 @@ const SummaryPage = () => {
     </div>
   );
 };
+
 export default SummaryPage;

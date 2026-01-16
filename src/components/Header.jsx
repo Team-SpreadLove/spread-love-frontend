@@ -1,24 +1,39 @@
 import Logo from "./Logo";
 import Button from "./Button";
 import { SUMMARY_STATUS } from "../constants/index.js";
+import useAuthStore from "../stores/useAuthStore";
+import useResultStore from "../stores/useResultStore";
 
-const Header = ({
-  isLoggedIn,
-  summaryStatus,
-  currentPath,
-  onLogoClick,
-  onLoginClick,
-  onLogoutClick,
-  onSettingsClick,
-}) => {
+const Header = ({ currentPath }) => {
+  const { isLoggedIn } = useAuthStore();
+  const { summaryStatus, resetSummary, resetAnalysis } = useResultStore();
+
   const isLoading = summaryStatus === SUMMARY_STATUS.LOADING;
   const isHistoryPage = currentPath.startsWith("/history");
   const isHistoryButtonVisible = !isLoading && isLoggedIn && !isHistoryPage;
 
+  const handleLogoClick = () => {
+    resetSummary();
+    resetAnalysis();
+  };
+
+  const handleLoginClick = () => {
+    const loginUrl = chrome.runtime.getURL("src/tabs/login.html");
+    chrome.tabs.create({ url: loginUrl });
+  };
+
+  const handleLogoutClick = () => {
+    chrome.storage.local.remove("token");
+  };
+
+  const handleSettingsClick = () => {
+    chrome.runtime.openOptionsPage();
+  };
+
   return (
     <header>
       <div className="flex justify-between">
-        <Logo iconSize={32} textSize={16} spacing="mt-0.5 ml-1" onClick={onLogoClick} />
+        <Logo iconSize={32} textSize={16} spacing="mt-0.5 ml-1" onClick={handleLogoClick} />
         <div className="flex gap-x-2">
           {isHistoryButtonVisible && (
             <Button to="/history" bgColor="bg-sl-white" borderColor="border-sl-blue">
@@ -29,12 +44,12 @@ const Header = ({
             <Button
               bgColor="bg-sl-white"
               borderColor="border-sl-blue"
-              onClick={isLoggedIn ? onLogoutClick : onLoginClick}
+              onClick={isLoggedIn ? handleLogoutClick : handleLoginClick}
             >
               {isLoggedIn ? "로그아웃" : "로그인"}
             </Button>
           )}
-          <Button bgColor="bg-sl-white" borderColor="border-sl-blue" onClick={onSettingsClick}>
+          <Button bgColor="bg-sl-white" borderColor="border-sl-blue" onClick={handleSettingsClick}>
             설정
           </Button>
         </div>

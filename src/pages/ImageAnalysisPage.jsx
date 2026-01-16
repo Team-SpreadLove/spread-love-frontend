@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { useOutletContext } from "react-router";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { IMAGE_ANALYSIS_STATUS } from "../constants/index";
+import useResultStore from "../stores/useResultStore";
 
 const ImageAnalysisPage = () => {
-  const { analysisStatus, setAnalysisStatus, analysisData, setAnalysisData } = useOutletContext();
-  const [error, setError] = useState(null);
+  const { analysisStatus, analysisData, setAnalysisResult, setAnalysisError } = useResultStore();
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     let isActive = true;
@@ -13,11 +13,13 @@ const ImageAnalysisPage = () => {
     const analyzeImage = async () => {
       const { pendingImageAnalysis } = await chrome.storage.local.get("pendingImageAnalysis");
 
+      await chrome.storage.local.remove("pendingImageAnalysis");
+
       if (!isActive) return;
 
       if (!pendingImageAnalysis) {
-        setError("분석할 이미지 정보가 없습니다");
-        setAnalysisStatus(IMAGE_ANALYSIS_STATUS.ERROR);
+        setErrorMessage("분석할 이미지 정보가 없습니다");
+        setAnalysisError();
 
         return;
       }
@@ -36,12 +38,10 @@ const ImageAnalysisPage = () => {
           chrome.storage.local.remove("pendingImageAnalysis");
 
           if (response && response.success) {
-            console.log("[Spread Love] 분석 결과:", response.data);
-            setAnalysisData(response.data);
-            setAnalysisStatus(IMAGE_ANALYSIS_STATUS.RESULT);
+            setAnalysisResult(response.data);
           } else {
-            setError(response?.error || "이미지 분석에 실패했습니다");
-            setAnalysisStatus(IMAGE_ANALYSIS_STATUS.ERROR);
+            setErrorMessage(response?.error || "이미지 분석에 실패했습니다");
+            setAnalysisError();
           }
         },
       );
@@ -53,6 +53,7 @@ const ImageAnalysisPage = () => {
       isActive = false;
     };
   }, []);
+
   return (
     <div className="flex flex-col items-center justify-center w-full h-full">
       {analysisStatus === IMAGE_ANALYSIS_STATUS.LOADING && (
@@ -69,7 +70,7 @@ const ImageAnalysisPage = () => {
       {analysisStatus === IMAGE_ANALYSIS_STATUS.ERROR && (
         <div className="flex flex-col gap-4">
           <h1 className="text-[32px] font-bold text-sl-red">오류</h1>
-          <p className="text-xl">{error}</p>
+          <p className="text-xl">{errorMessage}</p>
         </div>
       )}
     </div>
