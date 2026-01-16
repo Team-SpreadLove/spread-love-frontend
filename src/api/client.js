@@ -1,15 +1,19 @@
 import ky from "ky";
 
-const getOrCreateGuestId = async () => {
-  const result = await chrome.storage.local.get("guestId");
+const fetchGuestToken = async () => {
+  const response = await api.post("auth/guest").json();
+  const token = response.data.token;
+  await chrome.storage.local.set({ guestToken: token });
+  return token;
+};
 
-  if (result.guestId) {
-    return result.guestId;
-  }
+const getAuthToken = async () => {
+  const { token, guestToken } = await chrome.storage.local.get(["token", "guestToken"]);
 
-  const guestId = crypto.randomUUID();
-  await chrome.storage.local.set({ guestId });
-  return guestId;
+  if (token) return token;
+  if (guestToken) return guestToken;
+
+  return await fetchGuestToken();
 };
 
 const api = ky.create({
@@ -18,19 +22,12 @@ const api = ky.create({
   hooks: {
     beforeRequest: [
       async (request) => {
-        try {
-          const result = await chrome.storage.local.get("token");
-          const token = result.token;
-
-          if (token) {
-            request.headers.set("Authorization", `Bearer ${token}`);
-          } else {
-            const guestId = await getOrCreateGuestId();
-            request.headers.set("Guest-Id", guestId);
-          }
-        } catch (error) {
-          console.error("헤더 설정 실패:", error);
+        if (request.url.includes("/auth/guest")) {
+          return;
         }
+
+        const token = await getAuthToken();
+        request.headers.set("Authorization", `Bearer ${token}`);
       },
     ],
     afterResponse: [
@@ -38,9 +35,20 @@ const api = ky.create({
         if (response.status === 429) {
           await chrome.storage.local.set({ rateLimitExceeded: true });
         }
+
+        if (response.status === 401) {
+          const newToken = await fetchGuestToken();
+          return ky(request, {
+            ...options,
+            headers: {
+              ...options.headers,
+              Authorization: `Bearer ${newToken}`,
+            },
+          });
+        }
       },
     ],
   },
 });
 
-export { api };
+export { api, fetchGuestToken, getAuthToken };
