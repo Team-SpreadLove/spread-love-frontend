@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Button from "./Button";
 import { SUMMARY_STATUS, IMAGE_ANALYSIS_STATUS } from "../constants/index.js";
 import useAuthStore from "../stores/useAuthStore";
@@ -8,6 +9,23 @@ const Footer = ({ currentPath }) => {
   const { isLoggedIn } = useAuthStore();
   const { summaryStatus, analysisStatus } = useResultStore();
   const { openModal } = useModalStore();
+
+  const [remainingCount, setRemainingCount] = useState(null);
+
+  useEffect(() => {
+    chrome.storage.local.get("remainingCount", (res) => {
+      setRemainingCount(res.remainingCount);
+    });
+
+    const handleStorageChange = (changes) => {
+      if (changes.remainingCount) {
+        setRemainingCount(changes.remainingCount.newValue);
+      }
+    };
+
+    chrome.storage.onChanged.addListener(handleStorageChange);
+    return () => chrome.storage.onChanged.removeListener(handleStorageChange);
+  }, []);
 
   const isLoading = summaryStatus === SUMMARY_STATUS.LOADING;
   const isResult = summaryStatus === SUMMARY_STATUS.RESULT;
@@ -24,7 +42,13 @@ const Footer = ({ currentPath }) => {
   const isDeleteButtonVisible = !isLoading && isLoggedIn && hasResult;
 
   return (
-    <footer className="flex justify-end gap-x-2">
+    <footer className="relative flex justify-end gap-x-2">
+      {isLoggedIn && remainingCount !== null && (
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 text-base text-sl-black ml-1">
+          남은 횟수: {remainingCount}
+        </div>
+      )}
+
       {isSaveButtonVisible && (
         <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
           저장

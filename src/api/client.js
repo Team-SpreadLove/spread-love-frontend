@@ -32,6 +32,11 @@ const api = ky.create({
     ],
     afterResponse: [
       async (request, options, response) => {
+        const rateLimitRemaining = response.headers.get("RateLimit-Remaining");
+        if (rateLimitRemaining) {
+          await chrome.storage.local.set({ remainingCount: rateLimitRemaining });
+        }
+
         if (response.status === 429) {
           await chrome.storage.local.set({ rateLimitExceeded: true });
         }
