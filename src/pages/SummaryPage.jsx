@@ -1,20 +1,11 @@
 import { useOutletContext } from "react-router";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { SUMMARY_STATUS } from "../constants/index";
-import { requestCapturePermission } from "../utils/permissions";
 
 const SummaryPage = () => {
   const { summaryStatus, setSummaryStatus, summaryData, setSummaryData } = useOutletContext();
 
   const handleSummaryClick = async () => {
-    const hasPermission = await requestCapturePermission();
-
-    if (!hasPermission) {
-      console.error("요약 실패: 화면 캡처 권한이 필요합니다.");
-
-      return;
-    }
-
     setSummaryStatus(SUMMARY_STATUS.LOADING);
 
     chrome.runtime.sendMessage({ type: "SUMMARIZE" }, (response) => {
