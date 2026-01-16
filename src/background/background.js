@@ -3,37 +3,19 @@ import { api } from "../api/client.js";
 const sidePanelConfig = { openPanelOnActionClick: true };
 const focusedImages = new Map();
 
-const captureVisibleTab = () => {
-  return new Promise((resolve, reject) => {
-    chrome.tabs.captureVisibleTab(null, { format: "png" }, (dataUrl) => {
-      if (chrome.runtime.lastError) {
-        reject(new Error(chrome.runtime.lastError.message));
-
-        return;
-      }
-      resolve(dataUrl);
-    });
-  });
-};
-
 const handleSummarizeMessage = async (sendResponse) => {
   try {
     const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
     const url = activeTab.url;
 
-    const imageBase64 = await captureVisibleTab();
-    const response = await fetch(imageBase64);
-    const imageBlob = await response.blob();
-
     const { settings } = await chrome.storage.sync.get("settings");
     const userSettings = settings || { length: "medium", persona: "default" };
 
-    const formData = new FormData();
-    formData.append("url", url);
-    formData.append("image", imageBlob, "screenshot.png");
-    formData.append("settings", JSON.stringify(userSettings));
-
-    const data = await api.post("summaries", { body: formData }).json();
+    const data = await api
+      .post("summaries", {
+        json: { url, settings: userSettings },
+      })
+      .json();
 
     sendResponse(data);
   } catch (error) {
