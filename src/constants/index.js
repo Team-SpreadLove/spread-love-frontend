@@ -2,6 +2,7 @@ const SUMMARY_STATUS = {
   DEFAULT: "default",
   LOADING: "loading",
   RESULT: "result",
+  ERROR: "error",
 };
 
 const IMAGE_ANALYSIS_STATUS = {
