@@ -23,7 +23,7 @@ const Header = ({ currentPath }) => {
   };
 
   const handleLogoutClick = () => {
-    chrome.storage.local.remove("token");
+    chrome.storage.local.remove("userToken");
   };
 
   const handleSettingsClick = () => {

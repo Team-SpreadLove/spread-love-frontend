@@ -14,15 +14,15 @@ const App = () => {
   useEffect(() => {
     let isMounted = true;
 
-    chrome.storage.local.get("token", (result) => {
+    chrome.storage.local.get("userToken", (result) => {
       if (isMounted) {
-        setIsLoggedIn(Boolean(result.token));
+        setIsLoggedIn(Boolean(result.userToken));
       }
     });
 
     const handleStorageChange = (changes) => {
-      if (changes.token && isMounted) {
-        setIsLoggedIn(Boolean(changes.token.newValue));
+      if (changes.userToken && isMounted) {
+        setIsLoggedIn(Boolean(changes.userToken.newValue));
       }
 
       if (changes.rateLimitExceeded && changes.rateLimitExceeded.newValue === true && isMounted) {

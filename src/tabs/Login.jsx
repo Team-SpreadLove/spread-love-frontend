@@ -12,7 +12,7 @@ const Login = () => {
         if (!isMounted) return;
 
         if (session) {
-          chrome.storage.local.set({ token: session.access_token }, () => {
+          chrome.storage.local.set({ userToken: session.access_token }, () => {
             chrome.tabs.getCurrent((tab) => {
               if (tab && tab.id) chrome.tabs.remove(tab.id);
             });

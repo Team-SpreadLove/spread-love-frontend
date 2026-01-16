@@ -8,9 +8,9 @@ const fetchGuestToken = async () => {
 };
 
 const getAuthToken = async () => {
-  const { token, guestToken } = await chrome.storage.local.get(["token", "guestToken"]);
+  const { userToken, guestToken } = await chrome.storage.local.get(["userToken", "guestToken"]);
 
-  if (token) return token;
+  if (userToken) return userToken;
   if (guestToken) return guestToken;
 
   return await fetchGuestToken();
