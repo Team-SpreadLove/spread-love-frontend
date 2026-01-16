@@ -5,10 +5,6 @@ const handleFocusIn = (event) => {
 
   if (!imageElement) return;
 
-  const hasAlt = imageElement.alt && imageElement.alt.trim();
-
-  if (hasAlt) return;
-
   chrome.runtime.sendMessage({
     type: "IMAGE_FOCUSED",
     imageUrl: imageElement.currentSrc || imageElement.src,
@@ -25,9 +21,8 @@ const handleGetFocusedImage = (message, sender, sendResponse) => {
 
   const focusedElement = document.activeElement;
   const isImage = focusedElement && focusedElement.tagName === "IMG";
-  const hasAlt = focusedElement && focusedElement.alt && focusedElement.alt.trim();
 
-  if (!isImage || hasAlt) return sendResponse({ hasImage: false });
+  if (!isImage) return sendResponse({ hasImage: false });
 
   sendResponse({
     hasImage: true,
