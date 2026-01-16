@@ -1,7 +1,16 @@
-import { api } from "../api/client.js";
+import { api, fetchGuestToken } from "../api/client.js";
 
 const sidePanelConfig = { openPanelOnActionClick: true };
 const focusedImages = new Map();
+
+const isTokenExpired = (token) => {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.exp * 1000 < Date.now();
+  } catch {
+    return true;
+  }
+};
 
 const handleSummarizeMessage = async (sendResponse) => {
   try {
@@ -71,6 +80,7 @@ const handleAnalyzeImage = async (payload, sendResponse) => {
     sendResponse({ success: false, error: error.message });
   }
 };
+
 const handleMessage = (message, sender, sendResponse) => {
   if (message.type === "IMAGE_FOCUSED") {
     focusedImages.set(sender.tab.id, {
@@ -117,6 +127,7 @@ const handleMessage = (message, sender, sendResponse) => {
     return true;
   }
 };
+
 const handleAnalyzeImageCommand = async (tab) => {
   const focusedImage = focusedImages.get(tab.id);
 
@@ -135,7 +146,7 @@ const handleAnalyzeImageCommand = async (tab) => {
   await chrome.storage.local.set({ pendingImageAnalysis: focusedImage });
 };
 
-const init = () => {
+const init = async () => {
   chrome.sidePanel.setPanelBehavior(sidePanelConfig).catch((error) => console.error(error));
   chrome.runtime.onMessage.addListener(handleMessage);
 
@@ -144,6 +155,11 @@ const init = () => {
       handleAnalyzeImageCommand(tab);
     }
   });
+
+  const { guestToken } = await chrome.storage.local.get("guestToken");
+  if (!guestToken || isTokenExpired(guestToken)) {
+    fetchGuestToken().catch((err) => console.error("초기 게스트 토큰 발급 실패:", err));
+  }
 };
 
 init();
