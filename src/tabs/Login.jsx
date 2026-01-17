@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Logo from "../components/Logo";
 import { supabase } from "../api/supabase";
 
 const Login = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     let isMounted = true;
 
@@ -27,6 +29,8 @@ const Login = () => {
   }, []);
 
   const handleGoogleLogin = async () => {
+    setIsLoading(true);
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
@@ -37,6 +41,7 @@ const Login = () => {
     if (error) {
       console.error("로그인 에러:", error);
       alert("로그인에 실패했습니다. 다시 시도해주세요.");
+      setIsLoading(false);
     }
   };
 
@@ -50,6 +55,7 @@ const Login = () => {
         aria-label="Google 계정으로 로그인"
         onClick={handleGoogleLogin}
         className="cursor-pointer"
+        disabled={isLoading}
       >
         <img src="/images/icons/google-signin.svg" alt="" aria-hidden="true" className="h-12" />
       </button>

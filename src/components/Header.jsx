@@ -19,7 +19,14 @@ const Header = ({ currentPath }) => {
 
   const handleLoginClick = () => {
     const loginUrl = chrome.runtime.getURL("src/tabs/login.html");
-    chrome.tabs.create({ url: loginUrl });
+
+    chrome.tabs.query({ url: loginUrl }, (tabs) => {
+      if (tabs.length > 0) {
+        chrome.tabs.update(tabs[0].id, { active: true });
+      } else {
+        chrome.tabs.create({ url: loginUrl });
+      }
+    });
   };
 
   const handleLogoutClick = () => {
