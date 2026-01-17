@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import Logo from "./Logo";
 import Button from "./Button";
 import { SUMMARY_STATUS } from "../constants/index.js";
@@ -7,6 +8,7 @@ import useResultStore from "../stores/useResultStore";
 const Header = ({ currentPath }) => {
   const { isLoggedIn } = useAuthStore();
   const { summaryStatus, resetSummary, resetAnalysis } = useResultStore();
+  const navigate = useNavigate();
 
   const isLoading = summaryStatus === SUMMARY_STATUS.LOADING;
   const isHistoryPage = currentPath.startsWith("/history");
@@ -31,6 +33,7 @@ const Header = ({ currentPath }) => {
 
   const handleLogoutClick = () => {
     chrome.storage.local.remove("userToken");
+    navigate("/");
   };
 
   const handleSettingsClick = () => {
