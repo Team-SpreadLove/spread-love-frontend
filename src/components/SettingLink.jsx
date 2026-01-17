@@ -1,8 +1,16 @@
-const SettingLink = ({ label }) => {
+const SettingLink = ({ label, url }) => {
+  const handleCreateTab = () => {
+    chrome.tabs.create({ url });
+  };
+
   return (
-    <a href="#" className="block mb-8 text-lg text-sl-blue hover:underline">
+    <button
+      type="button"
+      onClick={handleCreateTab}
+      className="block mb-8 text-lg text-sl-blue hover:underline cursor-pointer"
+    >
       {label}
-    </a>
+    </button>
   );
 };
 

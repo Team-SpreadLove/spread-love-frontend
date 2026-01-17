@@ -58,7 +58,7 @@ const GeneralPage = () => {
         onChange={handlePersonaChange}
         options={PERSONA_OPTIONS}
       />
-      <SettingLink label="단축키 설정" />
+      <SettingLink label="단축키 설정" url="chrome://extensions/shortcuts" />
 
       <button
         type="button"
