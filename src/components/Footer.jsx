@@ -9,8 +9,11 @@ const Footer = ({ currentPath }) => {
   const { isLoggedIn } = useAuthStore();
   const { summaryStatus, analysisStatus } = useResultStore();
   const { openModal } = useModalStore();
-
   const [remainingCount, setRemainingCount] = useState(null);
+
+  const handleCloseClick = () => {
+    window.close();
+  };
 
   useEffect(() => {
     chrome.storage.local.get("remainingCount", (res) => {
@@ -59,7 +62,7 @@ const Footer = ({ currentPath }) => {
           삭제
         </Button>
       )}
-      <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
+      <Button bgColor="bg-sl-white" borderColor="border-sl-blue" onClick={handleCloseClick}>
         닫기
       </Button>
     </footer>
