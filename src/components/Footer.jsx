@@ -41,7 +41,6 @@ const Footer = ({ currentPath }) => {
   const hasResult =
     (isSummaryPage && isResult) || isHistoryDetailPage || (isAnalysisPage && isAnalysisResult);
 
-  const isSaveButtonVisible = !isLoading && hasResult;
   const isDeleteButtonVisible = !isLoading && isLoggedIn && hasResult;
 
   return (
@@ -50,12 +49,6 @@ const Footer = ({ currentPath }) => {
         <div className="absolute left-0 top-1/2 -translate-y-1/2 text-base text-sl-black ml-1">
           남은 횟수: {remainingCount}
         </div>
-      )}
-
-      {isSaveButtonVisible && (
-        <Button bgColor="bg-sl-white" borderColor="border-sl-blue">
-          저장
-        </Button>
       )}
       {isDeleteButtonVisible && (
         <Button bgColor="bg-sl-white" borderColor="border-sl-blue" onClick={openModal}>
