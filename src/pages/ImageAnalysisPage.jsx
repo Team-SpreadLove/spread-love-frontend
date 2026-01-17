@@ -18,7 +18,7 @@ const ImageAnalysisPage = () => {
       if (!isActive) return;
 
       if (!pendingImageAnalysis) {
-        setErrorMessage("분석할 이미지 정보가 없습니다");
+        setErrorMessage("분석할 이미지 정보가 없습니다. 이미지를 선택 후 단축키를 눌러주세요");
         setAnalysisError();
 
         return;
@@ -40,7 +40,10 @@ const ImageAnalysisPage = () => {
           if (response && response.success) {
             setAnalysisResult(response.data);
           } else {
-            setErrorMessage(response?.error || "이미지 분석에 실패했습니다");
+            setErrorMessage(
+              response?.error ||
+                "이미지 분석에 실패했습니다. 이미지를 다시 선택 후 단축키를 눌러주세요.",
+            );
             setAnalysisError();
           }
         },
@@ -68,8 +71,8 @@ const ImageAnalysisPage = () => {
       )}
 
       {analysisStatus === IMAGE_ANALYSIS_STATUS.ERROR && (
-        <div className="flex flex-col gap-4">
-          <h1 className="text-[32px] font-bold text-sl-red">오류</h1>
+        <div role="alert" className="flex flex-col gap-4">
+          <p className="text-[32px] font-bold text-sl-red">오류</p>
           <p className="text-xl">{errorMessage}</p>
         </div>
       )}

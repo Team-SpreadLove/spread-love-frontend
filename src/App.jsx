@@ -3,7 +3,6 @@ import { Outlet, useLocation, useNavigate } from "react-router";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import DeleteModal from "./components/DeleteModal";
-import { ERROR_MESSAGES } from "./constants/index.js";
 import useAuthStore from "./stores/useAuthStore";
 
 const App = () => {
@@ -23,11 +22,6 @@ const App = () => {
     const handleStorageChange = (changes) => {
       if (changes.userToken && isMounted) {
         setIsLoggedIn(Boolean(changes.userToken.newValue));
-      }
-
-      if (changes.rateLimitExceeded && changes.rateLimitExceeded.newValue === true && isMounted) {
-        alert(ERROR_MESSAGES.RATE_LIMIT_EXCEEDED);
-        chrome.storage.local.remove("rateLimitExceeded");
       }
     };
 
