@@ -47,6 +47,11 @@ const TEST_DATA = {
   },
 };
 
+const PAGINATION = {
+  PAGE_SIZE: 12,
+  GROUP_SIZE: 5,
+};
+
 export {
   SUMMARY_STATUS,
   IMAGE_ANALYSIS_STATUS,
@@ -55,4 +60,5 @@ export {
   PERSONA_OPTIONS,
   DEFAULT_SETTINGS,
   TEST_DATA,
+  PAGINATION,
 };
