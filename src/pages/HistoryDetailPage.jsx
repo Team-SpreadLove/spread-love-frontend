@@ -1,39 +1,8 @@
-import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router";
-import LoadingSpinner from "../components/LoadingSpinner";
+import { useLocation, Link } from "react-router";
 
 const HistoryDetailPage = () => {
-  const { id } = useParams();
-  const [history, setHistory] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    chrome.runtime.sendMessage(
-      { type: "FETCH_HISTORY_DETAIL", payload: { historyId: id } },
-      (response) => {
-        if (!isMounted) return;
-
-        if (response?.success) {
-          setHistory(response.data);
-        }
-        setIsLoading(false);
-      },
-    );
-
-    return () => {
-      isMounted = false;
-    };
-  }, [id]);
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center w-full h-full">
-        <LoadingSpinner message={"상세 정보를 불러오는 중입니다..."} />
-      </div>
-    );
-  }
+  const location = useLocation();
+  const { history } = location.state || {};
 
   if (!history) {
     return (

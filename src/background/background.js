@@ -42,16 +42,6 @@ const handleFetchHistories = async (sendResponse) => {
   }
 };
 
-const handleFetchHistoryDetail = async (payload, sendResponse) => {
-  try {
-    const data = await api.get(`histories/${payload.historyId}`).json();
-
-    sendResponse(data);
-  } catch (error) {
-    sendResponse({ success: false, error: error.message });
-  }
-};
-
 const handleDeleteHistory = async (payload, sendResponse) => {
   try {
     const data = await api.delete(`histories/${payload.historyId}`).json();
@@ -111,12 +101,6 @@ const handleMessage = (message, sender, sendResponse) => {
 
   if (message.type === "FETCH_HISTORIES") {
     handleFetchHistories(sendResponse);
-
-    return true;
-  }
-
-  if (message.type === "FETCH_HISTORY_DETAIL") {
-    handleFetchHistoryDetail(message.payload, sendResponse);
 
     return true;
   }

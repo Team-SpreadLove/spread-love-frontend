@@ -42,6 +42,7 @@ const HistoryPage = () => {
         <li key={history.id}>
           <Link
             to={`/history/${history.id}`}
+            state={{ history }}
             className="block w-full h-10 px-4 bg-sl-blue rounded-2xl text-base text-sl-white truncate leading-10 text-center"
           >
             {new Date(history.createdAt).toLocaleDateString("ko-KR", {
