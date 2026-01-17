@@ -45,7 +45,12 @@ const Login = () => {
       <div className="mb-8">
         <Logo iconSize={128} textSize={64} spacing="ml-2" useRouter={false} />
       </div>
-      <button type="button" aria-label="Google 계정으로 로그인" onClick={handleGoogleLogin}>
+      <button
+        type="button"
+        aria-label="Google 계정으로 로그인"
+        onClick={handleGoogleLogin}
+        className="cursor-pointer"
+      >
         <img src="/images/icons/google-signin.svg" alt="" aria-hidden="true" className="h-12" />
       </button>
     </div>

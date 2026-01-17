@@ -25,7 +25,7 @@ const SummaryPage = () => {
         <button
           type="button"
           onClick={handleSummaryClick}
-          className="flex items-center justify-center gap-2 w-full h-[30px] bg-sl-blue border rounded-2xl font-medium text-white"
+          className="flex items-center justify-center gap-2 w-full h-[30px] bg-sl-blue border rounded-2xl font-medium text-white cursor-pointer"
         >
           <img src="/images/icons/spreadlove-summary-16.svg" alt="요약 아이콘" aria-hidden="true" />
           <span>이 페이지 요약하기</span>

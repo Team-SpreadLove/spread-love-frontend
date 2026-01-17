@@ -8,7 +8,7 @@ const Button = ({ children, bgColor, borderColor, textColor = "text-sl-black", t
       {children}
     </Link>
   ) : (
-    <button type="button" onClick={onClick} className={className}>
+    <button type="button" onClick={onClick} className={`${className} cursor-pointer`}>
       {children}
     </button>
   );

@@ -63,7 +63,7 @@ const GeneralPage = () => {
       <button
         type="button"
         onClick={handleSave}
-        className="w-full px-6 py-3 bg-sl-blue text-white rounded-lg text-lg"
+        className="w-full px-6 py-3 bg-sl-blue text-white rounded-lg text-lg cursor-pointer"
       >
         저장
       </button>
