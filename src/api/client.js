@@ -25,10 +25,15 @@ const api = ky.create({
           await chrome.storage.local.set({ rateLimitExceeded: true });
         }
 
-        if (response.status === 401) {
+        if (response.status === 401 && options._retried) {
+          return response;
+        }
+
+        if (response.status === 401 && !options._retried) {
           const newToken = await fetchGuestToken();
           return ky(request, {
             ...options,
+            _retried: true,
             headers: {
               ...options.headers,
               Authorization: `Bearer ${newToken}`,
