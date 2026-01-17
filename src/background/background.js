@@ -32,9 +32,10 @@ const handleSummarizeMessage = async (sendResponse) => {
   }
 };
 
-const handleFetchHistories = async (sendResponse) => {
+const handleFetchHistories = async (payload, sendResponse) => {
   try {
-    const data = await api.get("histories").json();
+    const { page = 1, limit = 12 } = payload || {};
+    const data = await api.get(`histories?page=${page}&limit=${limit}`).json();
 
     sendResponse(data);
   } catch (error) {
@@ -100,7 +101,7 @@ const handleMessage = (message, sender, sendResponse) => {
   }
 
   if (message.type === "FETCH_HISTORIES") {
-    handleFetchHistories(sendResponse);
+    handleFetchHistories(message.payload, sendResponse);
 
     return true;
   }

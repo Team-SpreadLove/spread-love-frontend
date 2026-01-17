@@ -9,23 +9,36 @@ const HistoryPage = () => {
   const [histories, setHistories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     let isMounted = true;
 
-    chrome.runtime.sendMessage({ type: "FETCH_HISTORIES" }, (response) => {
-      if (!isMounted) return;
+    chrome.runtime.sendMessage(
+      { type: "FETCH_HISTORIES", payload: { page: currentPage, limit: PAGINATION.PAGE_SIZE } },
+      (response) => {
+        if (!isMounted) return;
 
-      if (response?.success) {
-        setHistories(response.data.histories);
-      }
-      setIsLoading(false);
-    });
+        if (response?.success) {
+          setHistories(response.data.histories);
+          setTotalPages(response.data.pagination?.totalPages || 1);
+        }
+
+        setIsLoading(false);
+      },
+    );
 
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [currentPage]);
+
+  const handlePageChange = (page) => {
+    if (page === currentPage) return;
+
+    setIsLoading(true);
+    setCurrentPage(page);
+  };
 
   if (isLoading) {
     return (
@@ -39,14 +52,10 @@ const HistoryPage = () => {
     return <NoData message={"기록이 없습니다"} />;
   }
 
-  const totalPages = Math.ceil(histories.length / PAGINATION.PAGE_SIZE);
-  const startIndex = (currentPage - 1) * PAGINATION.PAGE_SIZE;
-  const currentHistories = histories.slice(startIndex, startIndex + PAGINATION.PAGE_SIZE);
-
   return (
     <div className="flex flex-col w-full h-full">
       <ul className="flex flex-col w-full gap-3 flex-1">
-        {currentHistories.map((history) => (
+        {histories.map((history) => (
           <li key={history.id}>
             <Link
               to={`/history/${history.id}`}
@@ -63,7 +72,11 @@ const HistoryPage = () => {
           </li>
         ))}
       </ul>
-      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };
