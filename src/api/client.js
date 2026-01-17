@@ -1,21 +1,5 @@
 import ky from "ky";
 
-const fetchGuestToken = async () => {
-  const response = await api.post("auth/guest").json();
-  const token = response.data.token;
-  await chrome.storage.local.set({ guestToken: token });
-  return token;
-};
-
-const getAuthToken = async () => {
-  const { userToken, guestToken } = await chrome.storage.local.get(["userToken", "guestToken"]);
-
-  if (userToken) return userToken;
-  if (guestToken) return guestToken;
-
-  return await fetchGuestToken();
-};
-
 const api = ky.create({
   prefixUrl: import.meta.env.VITE_API_BASE_URL,
   timeout: 30000,
@@ -55,5 +39,21 @@ const api = ky.create({
     ],
   },
 });
+
+const fetchGuestToken = async () => {
+  const response = await api.post("auth/guest").json();
+  const token = response.data.token;
+  await chrome.storage.local.set({ guestToken: token });
+  return token;
+};
+
+const getAuthToken = async () => {
+  const { userToken, guestToken } = await chrome.storage.local.get(["userToken", "guestToken"]);
+
+  if (userToken) return userToken;
+  if (guestToken) return guestToken;
+
+  return await fetchGuestToken();
+};
 
 export { api, fetchGuestToken, getAuthToken };
