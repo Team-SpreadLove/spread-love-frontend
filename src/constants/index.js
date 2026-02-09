@@ -63,6 +63,11 @@ const ERROR_CODE = {
   RATE_LIMIT_EXCEEDED: "RATE_LIMIT_EXCEEDED",
 };
 
+const ERROR_MESSAGE = {
+  NETWORK: "서버에 연결할 수 없습니다. 네트워크를 확인해주세요.",
+  UNKNOWN: "알 수 없는 오류가 발생했습니다.",
+};
+
 export {
   SUMMARY_STATUS,
   IMAGE_ANALYSIS_STATUS,
@@ -73,4 +78,5 @@ export {
   PAGINATION,
   TOKEN_PREFIX,
   ERROR_CODE,
+  ERROR_MESSAGE,
 };

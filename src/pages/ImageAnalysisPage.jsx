@@ -71,10 +71,9 @@ const ImageAnalysisPage = () => {
       )}
 
       {analysisStatus === IMAGE_ANALYSIS_STATUS.ERROR && (
-        <div role="alert" className="flex flex-col gap-4">
-          <p className="text-[32px] font-bold text-sl-red">오류</p>
-          <p className="text-xl">{errorMessage}</p>
-        </div>
+        <p role="alert" className="mt-4 text-sl-red text-lg">
+          {errorMessage}
+        </p>
       )}
     </div>
   );

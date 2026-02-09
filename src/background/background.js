@@ -1,7 +1,27 @@
 import { api, fetchGuestToken, fetchRateLimit } from "../api/client.js";
+import { ERROR_MESSAGE } from "../constants/index.js";
+
+const getErrorMessage = (error) => {
+  if (error.message === "Failed to fetch") {
+    return ERROR_MESSAGE.NETWORK;
+  }
+
+  return error.message || ERROR_MESSAGE.UNKNOWN;
+};
 
 const sidePanelConfig = { openPanelOnActionClick: true };
 const focusedImages = new Map();
+let sidePanelPort = null;
+
+chrome.runtime.onConnect.addListener((port) => {
+  if (port.name !== "sidePanel") return;
+
+  sidePanelPort = port;
+
+  port.onDisconnect.addListener(() => {
+    sidePanelPort = null;
+  });
+});
 
 const isTokenExpired = (token) => {
   try {
@@ -29,7 +49,7 @@ const handleSummarizeMessage = async (sendResponse) => {
     await fetchRateLimit();
     sendResponse(data);
   } catch (error) {
-    let errorMessage = error.message;
+    let errorMessage = getErrorMessage(error);
     if (error.response) {
       const data = await error.response.json().catch(() => null);
       if (data && data.error) {
@@ -47,7 +67,7 @@ const handleFetchHistories = async (payload, sendResponse) => {
 
     sendResponse(data);
   } catch (error) {
-    sendResponse({ success: false, error: error.message });
+    sendResponse({ success: false, error: getErrorMessage(error) });
   }
 };
 
@@ -57,7 +77,7 @@ const handleDeleteHistory = async (payload, sendResponse) => {
 
     sendResponse(data);
   } catch (error) {
-    sendResponse({ success: false, error: error.message });
+    sendResponse({ success: false, error: getErrorMessage(error) });
   }
 };
 
@@ -77,7 +97,7 @@ const handleAnalyzeImage = async (payload, sendResponse) => {
     await fetchRateLimit();
     sendResponse({ success: true, data });
   } catch (error) {
-    let errorMessage = error.message;
+    let errorMessage = getErrorMessage(error);
     if (error.response) {
       const data = await error.response.json().catch(() => null);
       if (data && data.error) {
@@ -133,6 +153,10 @@ const handleAnalyzeImageCommand = async (tab) => {
   const focusedImage = focusedImages.get(tab.id);
 
   if (!focusedImage) {
+    return;
+  }
+
+  if (sidePanelPort) {
     return;
   }
 

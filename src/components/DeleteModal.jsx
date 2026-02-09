@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useLocation, useNavigate, matchPath } from "react-router";
 import Button from "./Button";
 import useModalStore from "../stores/useModalStore";
@@ -11,6 +12,7 @@ const DeleteModal = () => {
   const { isModalOpen, closeModal } = useModalStore();
   const { summaryData, resetSummary } = useSummaryStore();
   const { analysisData, resetAnalysis } = useAnalysisStore();
+  const [deleteError, setDeleteError] = useState(null);
 
   if (!isModalOpen) return null;
 
@@ -34,13 +36,18 @@ const DeleteModal = () => {
   const handleDelete = () => {
     const historyId = getHistoryId();
 
+    setDeleteError(null);
+
     chrome.runtime.sendMessage(
       {
         type: "DELETE_HISTORY",
         payload: { historyId },
       },
       (response) => {
-        if (!response.success) return;
+        if (!response.success) {
+          setDeleteError(response?.error || "삭제에 실패했습니다.");
+          return;
+        }
 
         closeModal();
 
@@ -60,6 +67,11 @@ const DeleteModal = () => {
     );
   };
 
+  const handleClose = () => {
+    setDeleteError(null);
+    closeModal();
+  };
+
   return (
     <div className="fixed inset-0 z-10 flex items-end justify-center">
       <div className="absolute inset-0 bg-sl-black/85"></div>
@@ -68,8 +80,13 @@ const DeleteModal = () => {
         <p className="mb-6 text-base font-semibold text-sl-black">
           이 채팅을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.
         </p>
+        {deleteError && (
+          <p role="alert" className="mb-4 text-sl-red text-lg">
+            {deleteError}
+          </p>
+        )}
         <div className="flex justify-end gap-3">
-          <Button bgColor="bg-sl-white" borderColor="border-sl-blue" onClick={closeModal}>
+          <Button bgColor="bg-sl-white" borderColor="border-sl-blue" onClick={handleClose}>
             취소
           </Button>
           <Button

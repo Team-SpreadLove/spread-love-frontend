@@ -4,6 +4,8 @@ import { RouterProvider } from "react-router";
 import { router } from "./router";
 import "./styles/globals.css";
 
+chrome.runtime.connect({ name: "sidePanel" });
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <RouterProvider router={router} />

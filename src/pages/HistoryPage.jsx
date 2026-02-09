@@ -10,6 +10,7 @@ const HistoryPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [fetchError, setFetchError] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -22,6 +23,9 @@ const HistoryPage = () => {
         if (response?.success) {
           setHistories(response.data.histories);
           setTotalPages(response.data.pagination?.totalPages || 1);
+          setFetchError(null);
+        } else {
+          setFetchError(response?.error || "기록을 불러오는데 실패했습니다.");
         }
 
         setIsLoading(false);
@@ -44,6 +48,16 @@ const HistoryPage = () => {
     return (
       <div className="flex justify-center items-center w-full h-full">
         <LoadingSpinner message={"전체 목록을 불러오는 중입니다..."} />
+      </div>
+    );
+  }
+
+  if (fetchError) {
+    return (
+      <div className="flex justify-center items-center w-full h-full">
+        <p role="alert" className="text-sl-red text-lg">
+          {fetchError}
+        </p>
       </div>
     );
   }
