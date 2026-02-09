@@ -1,6 +1,6 @@
 import LoadingSpinner from "../components/LoadingSpinner";
 import { SUMMARY_STATUS } from "../constants/index";
-import useResultStore from "../stores/useResultStore";
+import useSummaryStore from "../stores/useSummaryStore";
 
 const SummaryPage = () => {
   const {
@@ -10,7 +10,7 @@ const SummaryPage = () => {
     setSummaryLoading,
     setSummaryResult,
     setSummaryError,
-  } = useResultStore();
+  } = useSummaryStore();
 
   const handleSummaryClick = async () => {
     setSummaryLoading();

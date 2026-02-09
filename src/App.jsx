@@ -4,14 +4,14 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import DeleteModal from "./components/DeleteModal";
 import useAuthStore from "./stores/useAuthStore";
-import useResultStore from "./stores/useResultStore";
+import useSummaryStore from "./stores/useSummaryStore";
 import { fetchRateLimit } from "./api/client";
 
 const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { setIsLoggedIn } = useAuthStore();
-  const { clearSummaryError } = useResultStore();
+  const { clearSummaryError } = useSummaryStore();
 
   useEffect(() => {
     let isMounted = true;

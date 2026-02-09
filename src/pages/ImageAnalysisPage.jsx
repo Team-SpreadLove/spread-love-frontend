@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { IMAGE_ANALYSIS_STATUS } from "../constants/index";
-import useResultStore from "../stores/useResultStore";
+import useAnalysisStore from "../stores/useAnalysisStore";
 
 const ImageAnalysisPage = () => {
-  const { analysisStatus, analysisData, setAnalysisResult, setAnalysisError } = useResultStore();
   const [errorMessage, setErrorMessage] = useState(null);
+  const { analysisStatus, analysisData, setAnalysisResult, setAnalysisError } = useAnalysisStore();
 
   useEffect(() => {
     let isActive = true;

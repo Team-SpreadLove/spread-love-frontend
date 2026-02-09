@@ -2,14 +2,17 @@ import { useState, useEffect } from "react";
 import Button from "./Button";
 import { SUMMARY_STATUS, IMAGE_ANALYSIS_STATUS } from "../constants/index.js";
 import useAuthStore from "../stores/useAuthStore";
-import useResultStore from "../stores/useResultStore";
+import useSummaryStore from "../stores/useSummaryStore";
+import useAnalysisStore from "../stores/useAnalysisStore";
 import useModalStore from "../stores/useModalStore";
 
 const Footer = ({ currentPath }) => {
-  const { isLoggedIn } = useAuthStore();
-  const { summaryStatus, analysisStatus } = useResultStore();
-  const { openModal } = useModalStore();
   const [remainingCount, setRemainingCount] = useState(null);
+
+  const { isLoggedIn } = useAuthStore();
+  const { summaryStatus } = useSummaryStore();
+  const { analysisStatus } = useAnalysisStore();
+  const { openModal } = useModalStore();
 
   const handleCloseClick = () => {
     window.close();

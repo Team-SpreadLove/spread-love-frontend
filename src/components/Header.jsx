@@ -3,11 +3,13 @@ import Logo from "./Logo";
 import Button from "./Button";
 import { SUMMARY_STATUS } from "../constants/index.js";
 import useAuthStore from "../stores/useAuthStore";
-import useResultStore from "../stores/useResultStore";
+import useSummaryStore from "../stores/useSummaryStore";
+import useAnalysisStore from "../stores/useAnalysisStore";
 
 const Header = ({ currentPath }) => {
   const { isLoggedIn } = useAuthStore();
-  const { summaryStatus, resetSummary, resetAnalysis } = useResultStore();
+  const { summaryStatus, resetSummary } = useSummaryStore();
+  const { resetAnalysis } = useAnalysisStore();
   const navigate = useNavigate();
 
   const isLoading = summaryStatus === SUMMARY_STATUS.LOADING;

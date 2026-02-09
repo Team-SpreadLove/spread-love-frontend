@@ -1,14 +1,16 @@
 import { useLocation, useNavigate, matchPath } from "react-router";
 import Button from "./Button";
 import useModalStore from "../stores/useModalStore";
-import useResultStore from "../stores/useResultStore";
+import useSummaryStore from "../stores/useSummaryStore";
+import useAnalysisStore from "../stores/useAnalysisStore";
 
 const DeleteModal = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
   const { isModalOpen, closeModal } = useModalStore();
-  const { summaryData, analysisData, resetSummary, resetAnalysis } = useResultStore();
+  const { summaryData, resetSummary } = useSummaryStore();
+  const { analysisData, resetAnalysis } = useAnalysisStore();
 
   if (!isModalOpen) return null;
 
