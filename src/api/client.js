@@ -1,6 +1,6 @@
 import ky from "ky";
 import { supabase } from "./supabase";
-import { TOKEN_PREFIX } from "../constants/index.js";
+import { TOKEN_PREFIX, ERROR_CODE } from "../constants/index.js";
 
 const api = ky.create({
   prefixUrl: import.meta.env.VITE_API_BASE_URL,
@@ -54,15 +54,15 @@ const retryWithToken = (request, options, authHeader) => {
 
 const handleErrorCode = async (errorCode, request, options) => {
   switch (errorCode) {
-    case "GUEST_TOKEN_EXPIRED":
-    case "INVALID_GUEST_TOKEN":
-    case "TOKEN_REQUIRED": {
+    case ERROR_CODE.GUEST_TOKEN_EXPIRED:
+    case ERROR_CODE.INVALID_GUEST_TOKEN:
+    case ERROR_CODE.TOKEN_REQUIRED: {
       await chrome.storage.local.remove("guestToken");
       const newToken = await fetchGuestToken();
-      return retryWithToken(request, options, `Bearer ${newToken}`);
+      return retryWithToken(request, options, `Bearer ${TOKEN_PREFIX.GUEST}${newToken}`);
     }
 
-    case "USER_TOKEN_EXPIRED": {
+    case ERROR_CODE.USER_TOKEN_EXPIRED: {
       const refreshedToken = await refreshUserToken();
 
       if (!refreshedToken) {
@@ -73,15 +73,15 @@ const handleErrorCode = async (errorCode, request, options) => {
       return retryWithToken(request, options, `Bearer ${TOKEN_PREFIX.USER}${refreshedToken}`);
     }
 
-    case "INVALID_USER_TOKEN":
-    case "UNKNOWN_TOKEN_TYPE": {
+    case ERROR_CODE.INVALID_USER_TOKEN:
+    case ERROR_CODE.UNKNOWN_TOKEN_TYPE: {
       await chrome.storage.local.remove(["userToken", "guestToken"]);
       await handleSessionExpired();
       const newToken = await fetchGuestToken();
-      return retryWithToken(request, options, `Bearer ${newToken}`);
+      return retryWithToken(request, options, `Bearer ${TOKEN_PREFIX.GUEST}${newToken}`);
     }
 
-    case "RATE_LIMIT_EXCEEDED":
+    case ERROR_CODE.RATE_LIMIT_EXCEEDED:
       return null;
 
     default:
@@ -111,15 +111,15 @@ const handleSessionExpired = async () => {
 
 const fetchGuestToken = async () => {
   const response = await api.post("auth/guest").json();
-  const token = response.data.token;
+  const rawToken = response.data.token.replace("guest_", "");
   const rateLimit = response.data.rateLimit;
 
   await chrome.storage.local.set({
-    guestToken: token,
+    guestToken: rawToken,
     remainingCount: rateLimit.remaining,
   });
 
-  return token;
+  return rawToken;
 };
 
 const getAuthHeader = async () => {
@@ -130,7 +130,7 @@ const getAuthHeader = async () => {
   }
 
   if (guestToken) {
-    return `Bearer ${guestToken}`;
+    return `Bearer ${TOKEN_PREFIX.GUEST}${guestToken}`;
   }
 
   const newToken = await fetchGuestToken();

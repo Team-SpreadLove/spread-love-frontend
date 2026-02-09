@@ -5,11 +5,7 @@ const focusedImages = new Map();
 
 const isTokenExpired = (token) => {
   try {
-    let jwtToken = token;
-    if (token.startsWith("guest_")) {
-      jwtToken = token.slice(6);
-    }
-    const payload = JSON.parse(atob(jwtToken.split(".")[1]));
+    const payload = JSON.parse(atob(token.split(".")[1]));
     return payload.exp * 1000 < Date.now();
   } catch {
     return true;
