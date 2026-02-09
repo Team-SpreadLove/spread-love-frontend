@@ -1,8 +1,6 @@
-import { useEffect, useRef } from "react";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { SUMMARY_STATUS } from "../constants/index";
 import useResultStore from "../stores/useResultStore";
-import useAuthStore from "../stores/useAuthStore";
 
 const SummaryPage = () => {
   const {
@@ -12,17 +10,7 @@ const SummaryPage = () => {
     setSummaryLoading,
     setSummaryResult,
     setSummaryError,
-    clearSummaryError,
   } = useResultStore();
-  const { isLoggedIn } = useAuthStore();
-  const prevIsLoggedIn = useRef(isLoggedIn);
-
-  useEffect(() => {
-    if (prevIsLoggedIn.current !== isLoggedIn) {
-      clearSummaryError();
-    }
-    prevIsLoggedIn.current = isLoggedIn;
-  }, [isLoggedIn, clearSummaryError]);
 
   const handleSummaryClick = async () => {
     setSummaryLoading();
@@ -39,6 +27,16 @@ const SummaryPage = () => {
   return (
     <div className="flex flex-col items-center justify-center w-full h-full">
       {summaryStatus === SUMMARY_STATUS.DEFAULT && (
+        <button
+          type="button"
+          onClick={handleSummaryClick}
+          className="flex items-center justify-center gap-2 w-full h-[30px] bg-sl-blue border rounded-2xl font-medium text-white cursor-pointer"
+        >
+          <img src="/images/icons/spreadlove-summary-16.svg" alt="요약 아이콘" aria-hidden="true" />
+          <span>이 페이지 요약하기</span>
+        </button>
+      )}
+      {summaryStatus === SUMMARY_STATUS.ERROR && (
         <>
           <button
             type="button"
@@ -52,11 +50,9 @@ const SummaryPage = () => {
             />
             <span>이 페이지 요약하기</span>
           </button>
-          {summaryError && (
-            <p role="alert" className="mt-4 text-sl-red text-lg">
-              {summaryError}
-            </p>
-          )}
+          <p role="alert" className="mt-4 text-sl-red text-lg">
+            {summaryError}
+          </p>
         </>
       )}
       {summaryStatus === SUMMARY_STATUS.LOADING && (

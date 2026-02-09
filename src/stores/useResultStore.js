@@ -18,7 +18,7 @@ const useResultStore = create((set) => ({
 
       return { summaryData: data, summaryStatus: SUMMARY_STATUS.RESULT };
     }),
-  setSummaryError: (error) => set({ summaryStatus: SUMMARY_STATUS.DEFAULT, summaryError: error }),
+  setSummaryError: (error) => set({ summaryStatus: SUMMARY_STATUS.ERROR, summaryError: error }),
   resetSummary: () =>
     set({ summaryStatus: SUMMARY_STATUS.DEFAULT, summaryData: null, summaryError: null }),
   clearSummaryError: () => set({ summaryError: null }),

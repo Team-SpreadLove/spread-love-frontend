@@ -4,12 +4,14 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import DeleteModal from "./components/DeleteModal";
 import useAuthStore from "./stores/useAuthStore";
+import useResultStore from "./stores/useResultStore";
 import { fetchRateLimit } from "./api/client";
 
 const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { setIsLoggedIn } = useAuthStore();
+  const { clearSummaryError } = useResultStore();
 
   useEffect(() => {
     let isMounted = true;
@@ -20,12 +22,15 @@ const App = () => {
       }
     });
 
+    fetchRateLimit();
+
     const handleStorageChange = (changes) => {
       if (!isMounted) return;
 
       if (changes.userToken) {
         setIsLoggedIn(Boolean(changes.userToken.newValue));
         fetchRateLimit();
+        clearSummaryError();
       }
     };
 
@@ -35,10 +40,6 @@ const App = () => {
       isMounted = false;
       chrome.storage.onChanged.removeListener(handleStorageChange);
     };
-  }, []);
-
-  useEffect(() => {
-    fetchRateLimit();
   }, []);
 
   useEffect(() => {
