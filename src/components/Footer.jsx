@@ -45,7 +45,7 @@ const Footer = ({ currentPath }) => {
 
   return (
     <footer className="relative flex justify-end gap-x-2">
-      {isLoggedIn && remainingCount !== null && (
+      {remainingCount !== null && (
         <div className="absolute left-0 top-1/2 -translate-y-1/2 text-base text-sl-black ml-1">
           남은 횟수: {remainingCount}
         </div>
