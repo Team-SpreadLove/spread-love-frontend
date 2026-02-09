@@ -1,4 +1,6 @@
 import ky from "ky";
+import { supabase } from "./supabase";
+import { TOKEN_PREFIX } from "../constants/index.js";
 
 const api = ky.create({
   prefixUrl: import.meta.env.VITE_API_BASE_URL,
@@ -10,55 +12,142 @@ const api = ky.create({
           return;
         }
 
-        const token = await getAuthToken();
-        request.headers.set("Authorization", `Bearer ${token}`);
+        const authHeader = await getAuthHeader();
+        if (authHeader) {
+          request.headers.set("Authorization", authHeader);
+        }
       },
     ],
     afterResponse: [
       async (request, options, response) => {
-        const rateLimitRemaining = response.headers.get("RateLimit-Remaining");
-        if (rateLimitRemaining) {
-          await chrome.storage.local.set({ remainingCount: rateLimitRemaining });
-        }
-
         if (response.status === 429) {
-          await chrome.storage.local.set({ rateLimitExceeded: true });
+          await chrome.storage.local.set({ remainingCount: 0 });
         }
 
-        if (response.status === 401 && options._retried) {
-          return response;
+        if (!response.ok && !options._retried) {
+          const errorData = await response
+            .clone()
+            .json()
+            .catch(() => ({}));
+          const errorCode = errorData.errorCode;
+
+          const retryResult = await handleErrorCode(errorCode, request, options);
+          if (retryResult) return retryResult;
         }
 
-        if (response.status === 401 && !options._retried) {
-          const newToken = await fetchGuestToken();
-          return ky(request, {
-            ...options,
-            _retried: true,
-            headers: {
-              ...options.headers,
-              Authorization: `Bearer ${newToken}`,
-            },
-          });
-        }
+        return response;
       },
     ],
   },
 });
 
+const retryWithToken = (request, options, authHeader) => {
+  return ky(request, {
+    ...options,
+    _retried: true,
+    headers: {
+      ...options.headers,
+      Authorization: authHeader,
+    },
+  });
+};
+
+const handleErrorCode = async (errorCode, request, options) => {
+  switch (errorCode) {
+    case "GUEST_TOKEN_EXPIRED":
+    case "INVALID_GUEST_TOKEN":
+    case "TOKEN_REQUIRED": {
+      await chrome.storage.local.remove("guestToken");
+      const newToken = await fetchGuestToken();
+      return retryWithToken(request, options, `Bearer ${newToken}`);
+    }
+
+    case "USER_TOKEN_EXPIRED": {
+      const refreshedToken = await refreshUserToken();
+
+      if (!refreshedToken) {
+        await handleSessionExpired();
+        return null;
+      }
+
+      return retryWithToken(request, options, `Bearer ${TOKEN_PREFIX.USER}${refreshedToken}`);
+    }
+
+    case "INVALID_USER_TOKEN":
+    case "UNKNOWN_TOKEN_TYPE": {
+      await chrome.storage.local.remove(["userToken", "guestToken"]);
+      await handleSessionExpired();
+      const newToken = await fetchGuestToken();
+      return retryWithToken(request, options, `Bearer ${newToken}`);
+    }
+
+    case "RATE_LIMIT_EXCEEDED":
+      return null;
+
+    default:
+      return null;
+  }
+};
+
+const refreshUserToken = async () => {
+  try {
+    const { data, error } = await supabase.auth.refreshSession();
+
+    if (error || !data.session) {
+      return null;
+    }
+
+    const newToken = data.session.access_token;
+    await chrome.storage.local.set({ userToken: newToken });
+    return newToken;
+  } catch {
+    return null;
+  }
+};
+
+const handleSessionExpired = async () => {
+  await chrome.storage.local.remove("userToken");
+};
+
 const fetchGuestToken = async () => {
   const response = await api.post("auth/guest").json();
   const token = response.data.token;
-  await chrome.storage.local.set({ guestToken: token });
+  const rateLimit = response.data.rateLimit;
+
+  await chrome.storage.local.set({
+    guestToken: token,
+    remainingCount: rateLimit.remaining,
+  });
+
   return token;
 };
 
-const getAuthToken = async () => {
+const getAuthHeader = async () => {
   const { userToken, guestToken } = await chrome.storage.local.get(["userToken", "guestToken"]);
 
-  if (userToken) return userToken;
-  if (guestToken) return guestToken;
+  if (userToken) {
+    return `Bearer ${TOKEN_PREFIX.USER}${userToken}`;
+  }
 
-  return await fetchGuestToken();
+  if (guestToken) {
+    return `Bearer ${guestToken}`;
+  }
+
+  const newToken = await fetchGuestToken();
+  return `Bearer ${newToken}`;
 };
 
-export { api, fetchGuestToken, getAuthToken };
+const fetchRateLimit = async () => {
+  try {
+    const response = await api.get("auth/rate-limit").json();
+    const { remaining } = response.data;
+
+    await chrome.storage.local.set({ remainingCount: remaining });
+
+    return { remaining };
+  } catch {
+    return null;
+  }
+};
+
+export { api, fetchGuestToken, getAuthHeader, fetchRateLimit, refreshUserToken };
