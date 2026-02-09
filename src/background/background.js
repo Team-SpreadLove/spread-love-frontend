@@ -1,11 +1,15 @@
-import { api, fetchGuestToken } from "../api/client.js";
+import { api, fetchGuestToken, fetchRateLimit } from "../api/client.js";
 
 const sidePanelConfig = { openPanelOnActionClick: true };
 const focusedImages = new Map();
 
 const isTokenExpired = (token) => {
   try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
+    let jwtToken = token;
+    if (token.startsWith("guest_")) {
+      jwtToken = token.slice(6);
+    }
+    const payload = JSON.parse(atob(jwtToken.split(".")[1]));
     return payload.exp * 1000 < Date.now();
   } catch {
     return true;
@@ -26,9 +30,17 @@ const handleSummarizeMessage = async (sendResponse) => {
       })
       .json();
 
+    await fetchRateLimit();
     sendResponse(data);
   } catch (error) {
-    sendResponse({ success: false, error: error.message });
+    let errorMessage = error.message;
+    if (error.response) {
+      const data = await error.response.json().catch(() => null);
+      if (data && data.error) {
+        errorMessage = data.error;
+      }
+    }
+    sendResponse({ success: false, error: errorMessage });
   }
 };
 
@@ -66,9 +78,17 @@ const handleAnalyzeImage = async (payload, sendResponse) => {
       })
       .json();
 
+    await fetchRateLimit();
     sendResponse({ success: true, data });
   } catch (error) {
-    sendResponse({ success: false, error: error.message });
+    let errorMessage = error.message;
+    if (error.response) {
+      const data = await error.response.json().catch(() => null);
+      if (data && data.error) {
+        errorMessage = data.error;
+      }
+    }
+    sendResponse({ success: false, error: errorMessage });
   }
 };
 
