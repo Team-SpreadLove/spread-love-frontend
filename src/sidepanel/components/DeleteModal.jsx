@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate, matchPath } from "react-router";
 import Button from "../../shared/components/Button";
+import ErrorMessage from "../../shared/components/ErrorMessage";
 import useModalStore from "../../shared/stores/useModalStore";
 import useSummaryStore from "../../shared/stores/useSummaryStore";
 import useAnalysisStore from "../../shared/stores/useAnalysisStore";
@@ -80,11 +81,7 @@ const DeleteModal = () => {
         <p className="mb-6 text-base font-semibold text-sl-black">
           이 채팅을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.
         </p>
-        {deleteError && (
-          <p role="alert" className="mb-4 text-sl-red text-lg">
-            {deleteError}
-          </p>
-        )}
+        <ErrorMessage message={deleteError} className="mb-4" />
         <div className="flex justify-end gap-3">
           <Button bgColor="bg-sl-white" borderColor="border-sl-blue" onClick={handleClose}>
             취소

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Logo from "../shared/components/Logo";
+import ErrorMessage from "../shared/components/ErrorMessage";
 import { supabase } from "../shared/api/supabase";
 
 const LoginPage = () => {
@@ -61,11 +62,7 @@ const LoginPage = () => {
       >
         <img src="/images/icons/google-signin.svg" alt="" aria-hidden="true" className="h-12" />
       </button>
-      {errorMessage && (
-        <p role="alert" className="mt-4 text-sl-red text-lg">
-          {errorMessage}
-        </p>
-      )}
+      <ErrorMessage message={errorMessage} className="mt-4" />
     </div>
   );
 };

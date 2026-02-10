@@ -1,7 +1,12 @@
 import { api, fetchGuestToken, fetchRateLimit } from "../shared/api/client.js";
-import { ERROR_MESSAGE } from "../shared/constants/index.js";
+import { ERROR_MESSAGE, DEFAULT_SETTINGS } from "../shared/constants/index.js";
 
-const getErrorMessage = (error) => {
+const getErrorMessage = async (error) => {
+  const data = error.response ? await error.response.json().catch(() => null) : null;
+  const serverMessage = data?.error?.message;
+
+  if (serverMessage) return serverMessage;
+
   if (error.message === "Failed to fetch") {
     return ERROR_MESSAGE.NETWORK;
   }
@@ -9,7 +14,34 @@ const getErrorMessage = (error) => {
   return error.message || ERROR_MESSAGE.UNKNOWN;
 };
 
-const sidePanelConfig = { openPanelOnActionClick: true };
+const withErrorHandling = (handler) => async (payload, sendResponse) => {
+  try {
+    const data = await handler(payload);
+
+    sendResponse(data);
+  } catch (error) {
+    const errorMessage = await getErrorMessage(error);
+
+    sendResponse({ success: false, error: errorMessage });
+  }
+};
+
+const getUserSettings = async () => {
+  const { settings } = await chrome.storage.sync.get("settings");
+
+  return settings || DEFAULT_SETTINGS;
+};
+
+const isTokenExpired = (token) => {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+
+    return payload.exp * 1000 < Date.now();
+  } catch {
+    return true;
+  }
+};
+
 const focusedImages = new Map();
 let sidePanelPort = null;
 
@@ -23,103 +55,44 @@ chrome.runtime.onConnect.addListener((port) => {
   });
 });
 
-const isTokenExpired = (token) => {
-  try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    return payload.exp * 1000 < Date.now();
-  } catch {
-    return true;
-  }
+const handleSummarize = async () => {
+  const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const userSettings = await getUserSettings();
+
+  const data = await api
+    .post("summaries", {
+      json: { url: activeTab.url, settings: userSettings },
+    })
+    .json();
+
+  await fetchRateLimit();
+
+  return data;
 };
 
-const handleSummarizeMessage = async (sendResponse) => {
-  try {
-    const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    const url = activeTab.url;
+const handleFetchHistories = async (payload) => {
+  const { page = 1, limit = 11 } = payload || {};
 
-    const { settings } = await chrome.storage.sync.get("settings");
-    const userSettings = settings || { length: "medium", persona: "default" };
-
-    const data = await api
-      .post("summaries", {
-        json: { url, settings: userSettings },
-      })
-      .json();
-
-    await fetchRateLimit();
-    sendResponse(data);
-  } catch (error) {
-    let errorMessage = getErrorMessage(error);
-    if (error.response) {
-      const data = await error.response.json().catch(() => null);
-      if (data?.error?.message) {
-        errorMessage = data.error.message;
-      }
-    }
-    sendResponse({ success: false, error: errorMessage });
-  }
+  return api.get(`histories?page=${page}&limit=${limit}`).json();
 };
 
-const handleFetchHistories = async (payload, sendResponse) => {
-  try {
-    const { page = 1, limit = 12 } = payload || {};
-    const data = await api.get(`histories?page=${page}&limit=${limit}`).json();
-
-    sendResponse(data);
-  } catch (error) {
-    let errorMessage = getErrorMessage(error);
-    if (error.response) {
-      const data = await error.response.json().catch(() => null);
-      if (data?.error?.message) {
-        errorMessage = data.error.message;
-      }
-    }
-    sendResponse({ success: false, error: errorMessage });
-  }
+const handleDeleteHistory = async (payload) => {
+  return api.delete(`histories/${payload.historyId}`).json();
 };
 
-const handleDeleteHistory = async (payload, sendResponse) => {
-  try {
-    const data = await api.delete(`histories/${payload.historyId}`).json();
-
-    sendResponse(data);
-  } catch (error) {
-    let errorMessage = getErrorMessage(error);
-    if (error.response) {
-      const data = await error.response.json().catch(() => null);
-      if (data?.error?.message) {
-        errorMessage = data.error.message;
-      }
-    }
-    sendResponse({ success: false, error: errorMessage });
-  }
-};
-
-const handleAnalyzeImage = async (payload, sendResponse) => {
+const handleAnalyzeImage = async (payload) => {
   const { imageUrl, pageUrl } = payload;
+  const userSettings = await getUserSettings();
 
-  try {
-    const { settings } = await chrome.storage.sync.get("settings");
-    const userSettings = settings || { length: "medium", persona: "default" };
+  const data = await api
+    .post("analyses", {
+      json: { imageUrl, pageUrl, settings: userSettings },
+    })
+    .json();
 
-    const data = await api
-      .post("analyses", {
-        json: { imageUrl, pageUrl, settings: userSettings },
-      })
-      .json();
+  await fetchRateLimit();
 
-    await fetchRateLimit();
-    sendResponse(data);
-  } catch (error) {
-    let errorMessage = getErrorMessage(error);
-    if (error.response) {
-      const data = await error.response.json().catch(() => null);
-      if (data?.error?.message) {
-        errorMessage = data.error.message;
-      }
-    }
-    sendResponse({ success: false, error: errorMessage });
-  }
+  return data;
 };
 
 const handleMessage = (message, sender, sendResponse) => {
@@ -139,26 +112,23 @@ const handleMessage = (message, sender, sendResponse) => {
   }
 
   if (message.type === "SUMMARIZE") {
-    handleSummarizeMessage(sendResponse);
-
-    return true;
-  }
-
-  if (message.type === "DELETE_HISTORY") {
-    handleDeleteHistory(message.payload, sendResponse);
+    withErrorHandling(handleSummarize)(message.payload, sendResponse);
 
     return true;
   }
 
   if (message.type === "FETCH_HISTORIES") {
-    handleFetchHistories(message.payload, sendResponse);
+    withErrorHandling(handleFetchHistories)(message.payload, sendResponse);
+    return true;
+  }
 
+  if (message.type === "DELETE_HISTORY") {
+    withErrorHandling(handleDeleteHistory)(message.payload, sendResponse);
     return true;
   }
 
   if (message.type === "ANALYZE_IMAGE") {
-    handleAnalyzeImage(message.payload, sendResponse);
-
+    withErrorHandling(handleAnalyzeImage)(message.payload, sendResponse);
     return true;
   }
 };
@@ -186,7 +156,10 @@ const handleAnalyzeImageCommand = async (tab) => {
 };
 
 const init = async () => {
-  chrome.sidePanel.setPanelBehavior(sidePanelConfig).catch((error) => console.error(error));
+  chrome.sidePanel
+    .setPanelBehavior({ openPanelOnActionClick: true })
+    .catch((error) => console.error(error));
+
   chrome.runtime.onMessage.addListener(handleMessage);
 
   chrome.commands.onCommand.addListener((command, tab) => {

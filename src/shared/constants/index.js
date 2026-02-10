@@ -29,7 +29,7 @@ const DEFAULT_SETTINGS = {
 };
 
 const PAGINATION = {
-  PAGE_SIZE: 12,
+  PAGE_SIZE: 11,
   GROUP_SIZE: 5,
 };
 

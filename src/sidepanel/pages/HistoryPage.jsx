@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import NoData from "../../shared/components/NoData";
 import LoadingSpinner from "../../shared/components/LoadingSpinner";
+import ErrorMessage from "../../shared/components/ErrorMessage";
 import Pagination from "../components/Pagination";
 import { PAGINATION } from "../../shared/constants/index.js";
 import { formatDate } from "../../shared/utils/formatDate";
@@ -56,9 +57,7 @@ const HistoryPage = () => {
   if (fetchError) {
     return (
       <div className="flex justify-center items-center w-full h-full">
-        <p role="alert" className="text-sl-red text-lg">
-          {fetchError}
-        </p>
+        <ErrorMessage message={fetchError} />
       </div>
     );
   }

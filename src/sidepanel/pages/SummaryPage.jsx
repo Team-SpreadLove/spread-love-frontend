@@ -1,4 +1,5 @@
 import LoadingSpinner from "../../shared/components/LoadingSpinner";
+import ErrorMessage from "../../shared/components/ErrorMessage";
 import { SUMMARY_STATUS } from "../../shared/constants/index";
 import useSummaryStore from "../../shared/stores/useSummaryStore";
 
@@ -41,9 +42,7 @@ const SummaryPage = () => {
             <span>이 페이지 요약하기</span>
           </button>
           {summaryStatus === SUMMARY_STATUS.ERROR && (
-            <p role="alert" className="mt-4 text-sl-red text-lg">
-              {summaryError}
-            </p>
+            <ErrorMessage message={summaryError} className="mt-4" />
           )}
         </>
       )}

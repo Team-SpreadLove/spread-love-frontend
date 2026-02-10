@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import LoadingSpinner from "../../shared/components/LoadingSpinner";
+import ErrorMessage from "../../shared/components/ErrorMessage";
 import { IMAGE_ANALYSIS_STATUS } from "../../shared/constants/index";
 import useAnalysisStore from "../../shared/stores/useAnalysisStore";
 
@@ -71,9 +72,7 @@ const ImageAnalysisPage = () => {
       )}
 
       {analysisStatus === IMAGE_ANALYSIS_STATUS.ERROR && (
-        <p role="alert" className="mt-4 text-sl-red text-lg">
-          {errorMessage}
-        </p>
+        <ErrorMessage message={errorMessage} className="mt-4" />
       )}
     </div>
   );
