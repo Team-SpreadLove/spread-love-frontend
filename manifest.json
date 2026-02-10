@@ -16,10 +16,10 @@
     "default_title": "Spread Love"
   },
   "side_panel": {
-    "default_path": "src/index.html"
+    "default_path": "src/sidepanel/index.html"
   },
   "background": {
-    "service_worker": "src/background/background.js",
+    "service_worker": "src/background/index.js",
     "type": "module"
   },
   "commands": {
@@ -34,10 +34,10 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["src/content/content.js"]
+      "js": ["src/content/index.js"]
     }
   ],
   "permissions": ["sidePanel", "storage", "activeTab", "tabs"],
   "host_permissions": ["http://localhost:3000/*"],
-  "options_page": "src/tabs/settings.html"
+  "options_page": "src/settings/index.html"
 }
