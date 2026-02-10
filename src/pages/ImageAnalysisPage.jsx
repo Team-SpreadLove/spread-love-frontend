@@ -65,8 +65,8 @@ const ImageAnalysisPage = () => {
 
       {analysisStatus === IMAGE_ANALYSIS_STATUS.RESULT && analysisData && (
         <div className="flex flex-col gap-4">
-          <h1 className="text-[32px]">{analysisData.data.title}</h1>
-          <p className="text-2xl">{analysisData.data.summary}</p>
+          <h1 className="text-3xl">{analysisData.title}</h1>
+          <p className="text-2xl">{analysisData.summary}</p>
         </div>
       )}
 

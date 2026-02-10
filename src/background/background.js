@@ -95,7 +95,7 @@ const handleAnalyzeImage = async (payload, sendResponse) => {
       .json();
 
     await fetchRateLimit();
-    sendResponse({ success: true, data });
+    sendResponse(data);
   } catch (error) {
     let errorMessage = getErrorMessage(error);
     if (error.response) {

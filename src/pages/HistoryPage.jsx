@@ -4,6 +4,7 @@ import NoData from "../components/NoData";
 import LoadingSpinner from "../components/LoadingSpinner";
 import Pagination from "../components/Pagination";
 import { PAGINATION } from "../constants/index.js";
+import { formatDate } from "../utils/formatDate";
 
 const HistoryPage = () => {
   const [histories, setHistories] = useState([]);
@@ -76,12 +77,7 @@ const HistoryPage = () => {
               state={{ history }}
               className="block w-full h-10 px-4 bg-sl-blue rounded-2xl text-base text-sl-white truncate leading-10 text-center"
             >
-              {new Date(history.createdAt).toLocaleDateString("ko-KR", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}{" "}
-              - {history.contents.title}
+              {formatDate(history.createdAt)} - {history.contents.title}
             </Link>
           </li>
         ))}

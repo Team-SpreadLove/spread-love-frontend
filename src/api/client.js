@@ -134,7 +134,7 @@ const getAuthHeader = async () => {
   }
 
   const newToken = await fetchGuestToken();
-  return `Bearer ${newToken}`;
+  return `Bearer ${TOKEN_PREFIX.GUEST}${newToken}`;
 };
 
 const fetchRateLimit = async () => {

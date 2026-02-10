@@ -1,4 +1,5 @@
 import { useLocation, Link } from "react-router";
+import { formatDate } from "../utils/formatDate";
 
 const HistoryDetailPage = () => {
   const location = useLocation();
@@ -18,15 +19,8 @@ const HistoryDetailPage = () => {
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex flex-col flex-1 gap-4 overflow-y-auto">
-        <h1 className="text-[32px]">{history.contents.title}</h1>
-        <p className="text-sl-gray-dark text-sm">
-          요약 날짜:{" "}
-          {new Date(history.createdAt).toLocaleDateString("ko-KR", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </p>
+        <h1 className="text-3xl">{history.contents.title}</h1>
+        <p className="text-sl-gray-dark text-sm">요약 날짜: {formatDate(history.createdAt)}</p>
         <p className="text-lg">{history.contents.summary}</p>
       </div>
       <Link
