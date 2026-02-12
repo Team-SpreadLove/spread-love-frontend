@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useLocation, useNavigate, matchPath } from "react-router";
 import Button from "../../shared/components/Button";
 import ErrorMessage from "../../shared/components/ErrorMessage";
 import useModalStore from "../../shared/stores/useModalStore";
 import useSummaryStore from "../../shared/stores/useSummaryStore";
 import useAnalysisStore from "../../shared/stores/useAnalysisStore";
+import useFocusTrap from "../../shared/hooks/useFocusTrap";
 
 const DeleteModal = () => {
   const location = useLocation();
@@ -14,6 +15,14 @@ const DeleteModal = () => {
   const { summaryData, resetSummary } = useSummaryStore();
   const { analysisData, resetAnalysis } = useAnalysisStore();
   const [deleteError, setDeleteError] = useState(null);
+
+  const modalRef = useRef(null);
+  const handleTrapKeyDown = useFocusTrap(modalRef);
+
+  const setModalRef = useCallback((node) => {
+    modalRef.current = node;
+    if (node) node.focus();
+  }, []);
 
   if (!isModalOpen) return null;
 
@@ -74,12 +83,22 @@ const DeleteModal = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-10 flex items-end justify-center">
+    <div
+      ref={setModalRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+      tabIndex={-1}
+      onKeyDown={handleTrapKeyDown}
+      className="fixed inset-0 z-10 flex items-end justify-center outline-none"
+    >
       <div className="absolute inset-0 bg-sl-black/85"></div>
       <div className="relative w-full m-3 p-6 bg-sl-white border-3 border-sl-blue rounded-2xl shadow-2xl">
-        <h2 className="mb-2 text-xl font-bold text-sl-black">기록 삭제</h2>
-        <p className="mb-6 text-base font-semibold text-sl-black">
-          이 채팅을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.
+        <h2 id="modal-title" className="mb-2 text-xl font-bold text-sl-black">
+          기록 삭제
+        </h2>
+        <p tabIndex={0} className="mb-6 text-base font-semibold text-sl-black">
+          이 채팅을 삭제하시겠습니까?
         </p>
         <ErrorMessage message={deleteError} className="mb-4" />
         <div className="flex justify-end gap-3">
