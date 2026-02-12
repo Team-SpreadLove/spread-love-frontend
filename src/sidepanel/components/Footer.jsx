@@ -49,7 +49,10 @@ const Footer = ({ currentPath }) => {
   return (
     <footer className="relative flex justify-end gap-x-2">
       {remainingCount !== null && (
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 text-base text-sl-black ml-1">
+        <div
+          tabIndex={0}
+          className="absolute left-0 top-1/2 -translate-y-1/2 text-base text-sl-black ml-1"
+        >
           남은 횟수: {remainingCount}
         </div>
       )}
