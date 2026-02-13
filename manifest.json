@@ -38,6 +38,6 @@
     }
   ],
   "permissions": ["sidePanel", "storage", "activeTab", "tabs"],
-  "host_permissions": ["http://localhost:3000/*"],
+  "host_permissions": ["https://api.spreadloved.com/*"],
   "options_page": "src/settings/index.html"
 }
