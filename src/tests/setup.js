@@ -4,7 +4,7 @@ import { afterEach, vi } from "vitest";
 
 afterEach(() => {
   cleanup();
-  vi.clearAllMocks();
+  vi.resetAllMocks();
 });
 
 global.chrome = {
@@ -16,6 +16,8 @@ global.chrome = {
     },
     sync: {
       get: vi.fn(),
+      set: vi.fn(),
+      remove: vi.fn(),
     },
     onChanged: {
       addListener: vi.fn(),
@@ -33,6 +35,8 @@ global.chrome = {
     query: vi.fn(),
     create: vi.fn(),
     update: vi.fn(),
+    getCurrent: vi.fn(),
+    remove: vi.fn(),
   },
   sidePanel: {
     open: vi.fn(),
