@@ -13,8 +13,24 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "html"],
       reportsDirectory: "./coverage",
-      include: ["src/**/*.{js,jsx}"],
-      exclude: ["src/tests/**", "src/**/*.test.{js,jsx}", "src/main.jsx"],
+      include: [
+        "src/shared/**/*.{js,jsx}",
+        "src/sidepanel/**/*.{js,jsx}",
+        "src/login/**/*.{js,jsx}",
+        "src/settings/**/*.{js,jsx}",
+      ],
+      exclude: [
+        "src/tests/**",
+        "src/**/*.test.{js,jsx}",
+        "src/sidepanel/main.jsx",
+        "src/sidepanel/router.jsx",
+        "src/login/main.jsx",
+        "src/settings/main.jsx",
+        "src/settings/router.jsx",
+      ],
+      thresholds: {
+        lines: 70,
+      },
     },
   },
 });
