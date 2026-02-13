@@ -1,9 +1,14 @@
+import { useCallback } from "react";
 import { useLocation, Link } from "react-router";
 import { formatDate } from "../../shared/utils/formatDate";
 
 const HistoryDetailPage = () => {
   const location = useLocation();
   const { history } = location.state || {};
+
+  const detailRef = useCallback((node) => {
+    if (node) node.focus();
+  }, []);
 
   if (!history) {
     return (
@@ -18,10 +23,18 @@ const HistoryDetailPage = () => {
 
   return (
     <div className="flex flex-col w-full h-full">
-      <div className="flex flex-col flex-1 gap-4 overflow-y-auto">
+      <div
+        ref={detailRef}
+        tabIndex={0}
+        className="flex flex-col flex-1 gap-4 overflow-y-auto focus-visible:ring-2 focus-visible:ring-sl-blue outline-none"
+      >
         <h1 className="text-3xl">{history.contents.title}</h1>
-        <p className="text-sl-gray-dark text-sm">요약 날짜: {formatDate(history.createdAt)}</p>
-        <p className="text-lg">{history.contents.summary}</p>
+        <p tabIndex={0} className="text-sl-gray-dark text-sm">
+          요약 날짜: {formatDate(history.createdAt)}
+        </p>
+        <p tabIndex={0} className="text-lg">
+          {history.contents.summary}
+        </p>
       </div>
       <Link
         to="/history"

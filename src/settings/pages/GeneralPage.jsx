@@ -67,8 +67,9 @@ const GeneralPage = () => {
       >
         저장
       </button>
-
-      {isSaved && <p className="mt-4 text-sl-gray-dark text-base">설정이 저장되었습니다.</p>}
+      <p role="status" className={`text-sl-gray-dark text-base ${isSaved ? "mt-4" : ""}`}>
+        {isSaved && "설정이 저장되었습니다."}
+      </p>
     </TabLayout>
   );
 };

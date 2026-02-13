@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router";
 import NoData from "../../shared/components/NoData";
 import LoadingSpinner from "../../shared/components/LoadingSpinner";
@@ -13,6 +13,10 @@ const HistoryPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [fetchError, setFetchError] = useState(null);
+
+  const firstItemRef = useCallback((node) => {
+    if (node) node.focus();
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -69,9 +73,10 @@ const HistoryPage = () => {
   return (
     <div className="flex flex-col w-full h-full">
       <ul className="flex flex-col w-full gap-3 flex-1">
-        {histories.map((history) => (
+        {histories.map((history, index) => (
           <li key={history.id}>
             <Link
+              ref={index === 0 ? firstItemRef : undefined}
               to={`/history/${history.id}`}
               state={{ history }}
               className="block w-full h-10 px-4 bg-sl-blue rounded-2xl text-base text-sl-white truncate leading-10 text-center"

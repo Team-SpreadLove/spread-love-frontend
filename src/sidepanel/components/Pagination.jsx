@@ -16,6 +16,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         <button
           type="button"
           onClick={handlePrevGroup}
+          aria-label="이전 페이지 목록"
           className="px-2 py-1 text-sl-blue cursor-pointer"
         >
           &lt;
@@ -26,6 +27,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           key={page}
           type="button"
           onClick={() => onPageChange(page)}
+          aria-current={currentPage === page ? "page" : undefined}
           className={`px-2 py-1 cursor-pointer ${
             currentPage === page ? "font-bold text-sl-blue" : "text-sl-gray-dark"
           }`}
@@ -37,6 +39,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         <button
           type="button"
           onClick={handleNextGroup}
+          aria-label="다음 페이지 목록"
           className="px-2 py-1 text-sl-blue cursor-pointer"
         >
           &gt;
