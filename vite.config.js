@@ -6,6 +6,13 @@ import manifest from "./manifest.json";
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), crx({ manifest })],
+  build: {
+    rollupOptions: {
+      input: {
+        login: "src/login/index.html",
+      },
+    },
+  },
   server: {
     port: 5173,
     hmr: {
